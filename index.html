@@ -781,6 +781,36 @@ i[data-lucide="scale"]::before { content: "≡"; }
   justify-content: flex-end;
 }
 
+.queue-quick-form {
+  display: grid;
+  grid-template-columns: minmax(112px, 0.7fr) minmax(170px, 1fr) minmax(180px, 1.4fr) auto;
+  gap: 8px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+
+.queue-quick-form label {
+  display: grid;
+  gap: 6px;
+}
+
+.queue-quick-form label span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.queue-quick-form input,
+.queue-quick-form select {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 11px;
+}
+
+.queue-quick-form .action-btn {
+  min-height: 40px;
+  white-space: nowrap;
+}
+
 .task-form {
   display: grid;
   grid-template-columns: 1fr;
@@ -1645,10 +1675,40 @@ select {
     height: auto;
     border-right: 0;
     border-bottom: 1px solid var(--line);
+    padding: 16px 16px 10px;
   }
 
   .nav-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 45;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+    box-shadow: 0 -12px 28px rgba(23, 32, 28, 0.12);
+  }
+
+  .nav-item {
+    height: 50px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    padding: 0 4px;
+    font-size: 11px;
+    line-height: 1.1;
+  }
+
+  .nav-item svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .nav-item.active {
+    box-shadow: inset 0 3px 0 var(--accent);
   }
 
   .sidebar-block {
@@ -1657,6 +1717,7 @@ select {
 
   .main {
     padding: 18px;
+    padding-bottom: calc(18px + 126px);
   }
 
   .topbar,
@@ -1682,6 +1743,10 @@ select {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .queue-quick-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .span-2 {
     grid-column: auto;
   }
@@ -1694,6 +1759,7 @@ select {
 @media (max-width: 560px) {
   .main {
     padding: 14px;
+    padding-bottom: calc(14px + 170px);
   }
 
   h1 {
@@ -1709,6 +1775,14 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .sidebar-block {
+    display: none;
+  }
+
+  .queue-quick-form {
+    grid-template-columns: 1fr;
+  }
+
   .wide-field {
     grid-column: auto;
   }
@@ -1718,7 +1792,8 @@ select {
   }
 
   .nav-item {
-    padding: 0 10px;
+    height: 46px;
+    padding: 0 3px;
   }
 
   .overview-controls {
@@ -1946,13 +2021,36 @@ select {
                 <div class="compact-tools">
                   <button class="action-btn ghost small-action" id="queueScheduleBtn" type="button">
                     <i data-lucide="calendar-plus"></i>
-                    <span>安排</span>
+                    <span>完整安排</span>
                   </button>
                   <button class="icon-btn small" id="refreshQueue" title="刷新队列">
                     <i data-lucide="refresh-cw"></i>
                   </button>
                 </div>
               </div>
+              <form class="queue-quick-form" id="queueQuickForm" aria-label="快速安排发布内容">
+                <label>
+                  <span>平台</span>
+                  <select id="queueQuickPlatform">
+                    <option>TikTok</option>
+                    <option>YouTube</option>
+                    <option>Instagram</option>
+                    <option>Facebook</option>
+                  </select>
+                </label>
+                <label>
+                  <span>发布时间</span>
+                  <input id="queueQuickTime" type="datetime-local" />
+                </label>
+                <label class="queue-quick-title">
+                  <span>内容标题</span>
+                  <input id="queueQuickTitle" type="text" placeholder="输入要发布的内容" maxlength="80" required />
+                </label>
+                <button class="action-btn primary" type="submit">
+                  <i data-lucide="calendar-plus"></i>
+                  <span>加入队列</span>
+                </button>
+              </form>
               <div class="queue-list" id="queueList"></div>
             </article>
 
@@ -3297,6 +3395,8 @@ function renderDate() {
   const nextSlot = new Date();
   nextSlot.setHours(nextSlot.getHours() + 3, 0, 0, 0);
   qs("#timeInput").value = toDateTimeInput(nextSlot);
+  const queueQuickTime = qs("#queueQuickTime");
+  if (queueQuickTime) queueQuickTime.value = toDateTimeInput(nextSlot);
   state.focusDate = state.focusDate || toISODate(now);
   const monitorDate = qs("#monitorDateInput");
   if (monitorDate) monitorDate.value = state.focusDate;
@@ -4201,6 +4301,13 @@ function resetPostForm() {
   qs("#cancelPostEditBtn").hidden = true;
 }
 
+function resetQueueQuickForm() {
+  const form = qs("#queueQuickForm");
+  if (!form) return;
+  form.reset();
+  qs("#queueQuickTime").value = defaultPostTimeValue();
+}
+
 function fillPostForm(post) {
   const normalized = normalizeQueuePost(post);
   state.editingQueueId = normalized.id;
@@ -4233,6 +4340,21 @@ function postFromForm() {
     time: timePart,
     date: datePart || toISODate(new Date()),
     asset: qs("#assetInput").value || firstAssetId(),
+  });
+}
+
+function queueQuickPostFromForm() {
+  const dateTimeValue = qs("#queueQuickTime").value || defaultPostTimeValue();
+  const [datePart, timePart] = dateTimeValue.split("T");
+  return normalizeQueuePost({
+    title: qs("#queueQuickTitle").value.trim() || "未命名内容",
+    platform: qs("#queueQuickPlatform").value,
+    status: "待发布",
+    campaign: "未归类",
+    goal: "引流私信",
+    time: timePart,
+    date: datePart || toISODate(new Date()),
+    asset: firstAssetId(),
   });
 }
 
@@ -4316,6 +4438,23 @@ function bindMonitorDate() {
 }
 
 function bindQueue() {
+  qs("#queueQuickForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const title = qs("#queueQuickTitle").value.trim();
+    if (!title) {
+      showToast("请先填写内容标题");
+      return;
+    }
+
+    state.queue.push(queueQuickPostFromForm());
+    saveQueue();
+    resetQueueQuickForm();
+    renderQueue();
+    renderCalendar();
+    refreshIcons();
+    showToast("已加入发布队列");
+  });
+
   qs("#queueList").addEventListener("click", (event) => {
     const button = event.target.closest("button");
     if (!button) return;
@@ -5113,8 +5252,9 @@ function bindTopActions() {
   qs("#queueScheduleBtn").addEventListener("click", () => {
     resetPostForm();
     qs("#composer").scrollIntoView({ behavior: "smooth", block: "start" });
+    qs("#titleInput").focus();
     refreshIcons();
-    showToast("可以开始安排新内容");
+    showToast("已打开完整安排");
   });
 
   qs("#refreshQueue").addEventListener("click", () => {
