@@ -2192,6 +2192,10 @@ select {
     max-height: none !important;
   }
 
+  .holiday-library-panel {
+    display: none;
+  }
+
   .holiday-library-panel:not(.is-collapsed) .holiday-list {
     max-height: min(380px, 52vh);
     overflow-y: auto;
@@ -5879,27 +5883,51 @@ function bindNavigation() {
       item.classList.toggle("active", item.dataset.section === sectionId);
     });
   };
+  const sections = qsa("main > .section");
+  let navFrame = null;
+
+  const activeSectionFromScroll = () => {
+    const navHeight = qs(".nav-list")?.getBoundingClientRect().height || 0;
+    const usableHeight = Math.max(320, window.innerHeight - navHeight);
+    const anchorY = Math.min(usableHeight * 0.42, 260);
+    let active = sections[0]?.id || "overview";
+    let nearestDistance = Infinity;
+    sections.forEach((section) => {
+      const distance = Math.abs(section.getBoundingClientRect().top - anchorY);
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        active = section.id;
+      }
+    });
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 6) {
+      active = sections[sections.length - 1]?.id || active;
+    }
+    return active;
+  };
+
+  const updateActiveNav = (force = false) => {
+    if (!force && Date.now() < navClickLockUntil) return;
+    setActiveNav(activeSectionFromScroll());
+  };
+
+  const scheduleActiveUpdate = () => {
+    if (navFrame) return;
+    navFrame = requestAnimationFrame(() => {
+      navFrame = null;
+      updateActiveNav();
+    });
+  };
 
   qsa(".nav-item").forEach((link) => {
     link.addEventListener("click", () => {
-      navClickLockUntil = Date.now() + 900;
+      navClickLockUntil = Date.now() + 1400;
       setActiveNav(link.dataset.section);
     });
   });
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const active = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!active) return;
-      if (Date.now() < navClickLockUntil) return;
-      setActiveNav(active.target.id);
-    },
-    { rootMargin: "-20% 0px -65% 0px", threshold: [0.15, 0.3, 0.5] },
-  );
-
-  qsa(".section").forEach((section) => observer.observe(section));
+  window.addEventListener("scroll", scheduleActiveUpdate, { passive: true });
+  window.addEventListener("resize", scheduleActiveUpdate);
+  updateActiveNav(true);
 }
 
 function bindPlatformTabs() {
