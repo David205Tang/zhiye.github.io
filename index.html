@@ -1073,6 +1073,145 @@ select {
   margin-top: 14px;
 }
 
+.hot-tag-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.hot-tag-form,
+.hot-tag-panel {
+  padding: 16px;
+}
+
+.hot-tag-grid-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.hot-tag-grid-form label {
+  display: grid;
+  gap: 7px;
+}
+
+.hot-tag-grid-form label span,
+.hot-tag-filters label span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.hot-tag-grid-form input,
+.hot-tag-grid-form select,
+.hot-tag-grid-form textarea,
+.hot-tag-filters input,
+.hot-tag-filters select {
+  width: 100%;
+}
+
+.hot-tag-grid-form input,
+.hot-tag-filters input {
+  min-height: 40px;
+  padding: 0 11px;
+}
+
+.hot-tag-grid-form textarea {
+  min-height: 82px;
+  padding: 10px 11px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.hot-tag-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) repeat(2, minmax(120px, 0.45fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.hot-tag-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.hot-tag-summary div {
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+}
+
+.hot-tag-summary span,
+.hot-tag-card small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.hot-tag-summary strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 20px;
+}
+
+.hot-tag-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.hot-tag-card {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.hot-tag-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hot-tag-name {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.hot-tag-meta,
+.hot-tag-stats,
+.hot-tag-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.hot-tag-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.hot-tag-stats div {
+  padding: 8px;
+  border-radius: 6px;
+  background: var(--surface-soft);
+}
+
+.hot-tag-card p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .data-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.75fr);
@@ -1717,7 +1856,7 @@ select {
 
   .main {
     padding: 18px;
-    padding-bottom: calc(18px + 126px);
+    padding-bottom: calc(18px + 170px);
   }
 
   .topbar,
@@ -1729,6 +1868,7 @@ select {
   .composer-layout,
   .data-layout,
   .sync-grid,
+  .hot-tag-layout,
   .overview-grid,
   .campaign-grid {
     grid-template-columns: 1fr;
@@ -1744,6 +1884,10 @@ select {
   }
 
   .queue-quick-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hot-tag-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1769,6 +1913,10 @@ select {
   .metric-grid,
   .asset-grid,
   .asset-form-grid,
+  .hot-tag-grid,
+  .hot-tag-grid-form,
+  .hot-tag-filters,
+  .hot-tag-summary,
   .field-row,
   .task-form,
   .record-grid {
@@ -1903,6 +2051,10 @@ select {
           <a class="nav-item" href="#composer" data-section="composer">
             <i data-lucide="pen-line"></i>
             <span>创作</span>
+          </a>
+          <a class="nav-item" href="#hotTags" data-section="hotTags">
+            <i data-lucide="hash"></i>
+            <span>标签</span>
           </a>
           <a class="nav-item" href="#inbox" data-section="inbox">
             <i data-lucide="messages-square"></i>
@@ -2288,7 +2440,7 @@ select {
             </div>
             <div class="sync-note">
               <strong>备份范围</strong>
-              <span id="backupDetails">保存或导入数据后，会自动写入本机备份镜像。完整备份包含发布记录、排期、每日待办、素材库、活动、评论状态和快捷标签。</span>
+              <span id="backupDetails">保存或导入数据后，会自动写入本机备份镜像。完整备份包含发布记录、排期、每日待办、素材库、活动、评论状态、快捷标签和热门标签。</span>
             </div>
           </article>
 
@@ -2647,6 +2799,142 @@ select {
           </div>
         </section>
 
+        <section id="hotTags" class="section">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Hot Tags</p>
+              <h2>热门标签</h2>
+              <p class="section-note">手动保存常用和表现好的标签，按平台分类管理；这里不会自动抓取外部平台数据。</p>
+            </div>
+            <div class="compact-tools">
+              <button class="action-btn ghost" id="copySelectedHotTagsBtn" type="button">
+                <i data-lucide="copy"></i>
+                <span>复制当前列表</span>
+              </button>
+              <button class="icon-btn" id="hotTagResetBtn" type="button" title="清空录入">
+                <i data-lucide="rotate-ccw"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="hot-tag-layout">
+            <form class="panel hot-tag-form" id="hotTagForm">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Manual Tag</p>
+                  <h3 id="hotTagFormTitle">保存热门标签</h3>
+                </div>
+                <span class="status-pill good" id="hotTagMode">新增</span>
+              </div>
+              <div class="hot-tag-grid-form">
+                <label>
+                  <span>标签</span>
+                  <input id="hotTagName" type="text" placeholder="#factory" maxlength="40" required />
+                </label>
+                <label>
+                  <span>平台</span>
+                  <select id="hotTagPlatform">
+                    <option>TikTok</option>
+                    <option>YouTube</option>
+                    <option>Instagram</option>
+                    <option>Facebook</option>
+                  </select>
+                </label>
+                <label>
+                  <span>分类</span>
+                  <select id="hotTagCategory">
+                    <option>产品词</option>
+                    <option>场景词</option>
+                    <option>人群词</option>
+                    <option>节日词</option>
+                    <option>爆款词</option>
+                    <option>品牌词</option>
+                    <option>其他</option>
+                  </select>
+                </label>
+                <label>
+                  <span>热度</span>
+                  <select id="hotTagHeat">
+                    <option>高</option>
+                    <option>中</option>
+                    <option>低</option>
+                  </select>
+                </label>
+                <label>
+                  <span>状态</span>
+                  <select id="hotTagStatus">
+                    <option>推荐使用</option>
+                    <option>观察中</option>
+                    <option>暂停使用</option>
+                  </select>
+                </label>
+                <label>
+                  <span>已用次数</span>
+                  <input id="hotTagUses" type="number" min="0" step="1" value="0" />
+                </label>
+                <label>
+                  <span>曝光累计</span>
+                  <input id="hotTagViews" type="number" min="0" step="1" value="0" />
+                </label>
+                <label>
+                  <span>询盘累计</span>
+                  <input id="hotTagInquiries" type="number" min="0" step="1" value="0" />
+                </label>
+                <label class="wide-field">
+                  <span>备注</span>
+                  <textarea id="hotTagNote" rows="3" placeholder="记录适合什么内容、什么时候用、效果观察"></textarea>
+                </label>
+              </div>
+              <div class="form-actions">
+                <button class="action-btn primary" type="submit">
+                  <i data-lucide="save"></i>
+                  <span id="hotTagSubmitLabel">保存标签</span>
+                </button>
+                <button class="action-btn ghost" id="hotTagCancelBtn" type="button" hidden>
+                  <i data-lucide="x"></i>
+                  <span>取消编辑</span>
+                </button>
+              </div>
+            </form>
+
+            <aside class="panel hot-tag-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Filter</p>
+                  <h3>筛选与概览</h3>
+                </div>
+                <span class="status-pill" id="hotTagCount">0 条</span>
+              </div>
+              <div class="hot-tag-filters">
+                <label class="search-box">
+                  <i data-lucide="search"></i>
+                  <input id="hotTagSearch" type="search" placeholder="搜索标签、备注" />
+                </label>
+                <select id="hotTagPlatformFilter">
+                  <option value="all">全部平台</option>
+                  <option value="TikTok">TikTok</option>
+                  <option value="YouTube">YouTube</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="Facebook">Facebook</option>
+                </select>
+                <select id="hotTagCategoryFilter">
+                  <option value="all">全部分类</option>
+                  <option>产品词</option>
+                  <option>场景词</option>
+                  <option>人群词</option>
+                  <option>节日词</option>
+                  <option>爆款词</option>
+                  <option>品牌词</option>
+                  <option>其他</option>
+                </select>
+              </div>
+              <div class="hot-tag-summary" id="hotTagSummary"></div>
+            </aside>
+          </div>
+
+          <div class="hot-tag-grid" id="hotTagGrid"></div>
+        </section>
+
         <section id="inbox" class="section">
           <div class="section-head">
             <div>
@@ -2690,6 +2978,7 @@ const state = {
   editingRecordId: null,
   editingTaskId: null,
   editingQueueId: null,
+  editingHotTagId: null,
   assets: [],
   queue: [],
   tasks: [],
@@ -2697,9 +2986,13 @@ const state = {
   campaigns: [],
   records: [],
   hashtags: [],
+  hotTags: [],
 };
 
 const PLATFORMS = ["TikTok", "YouTube", "Instagram", "Facebook"];
+const HOT_TAG_CATEGORIES = ["产品词", "场景词", "人群词", "节日词", "爆款词", "品牌词", "其他"];
+const HOT_TAG_HEATS = ["高", "中", "低"];
+const HOT_TAG_STATUSES = ["推荐使用", "观察中", "暂停使用"];
 const PERIODS = {
   day: { label: "当日", compare: "较前日", trend: "当日" },
   week: { label: "本周", compare: "较上周", trend: "本周" },
@@ -2749,6 +3042,7 @@ const baseCampaigns = [];
 const legacyCampaignIds = new Set(["c1", "c2", "c3"]);
 
 const baseHashtags = [];
+const baseHotTags = [];
 const BACKUP_VERSION = 1;
 const BACKUP_DB_NAME = "social-media-workbench-backups";
 const BACKUP_STORE = "snapshots";
@@ -2796,6 +3090,10 @@ function initState() {
     .map(normalizeRecord)
     .filter((record) => !String(record.id).startsWith("r-seed-"));
   state.hashtags = storage.get("hashtags", baseHashtags).map(normalizeHashtag).filter(Boolean);
+  state.hotTags = storage.get("hotTags", baseHotTags).map(normalizeHotTag).filter((item) => item.tag);
+  if (!state.hotTags.length && state.hashtags.length) {
+    state.hotTags = state.hashtags.map((tag) => normalizeHotTag({ tag, platform: "TikTok", category: "其他" }));
+  }
   saveAssets();
   saveQueue();
   storage.set("tasks", state.tasks);
@@ -2803,6 +3101,7 @@ function initState() {
   storage.set("campaigns", state.campaigns);
   storage.set("records", state.records);
   saveHashtags();
+  saveHotTags();
 }
 
 function qs(selector) {
@@ -3004,6 +3303,192 @@ function saveHashtags() {
   storage.set("hashtags", state.hashtags);
 }
 
+function normalizeHotTagCategory(value) {
+  return HOT_TAG_CATEGORIES.includes(value) ? value : "其他";
+}
+
+function normalizeHotTagHeat(value) {
+  return HOT_TAG_HEATS.includes(value) ? value : "中";
+}
+
+function normalizeHotTagStatus(value) {
+  return HOT_TAG_STATUSES.includes(value) ? value : "推荐使用";
+}
+
+function normalizeHotTag(item = {}) {
+  const tag = normalizeHashtag(item.tag || item.name || item.value);
+  return {
+    id: item.id || `hot-tag-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    tag,
+    platform: normalizePlatform(item.platform || "TikTok"),
+    category: normalizeHotTagCategory(item.category),
+    heat: normalizeHotTagHeat(item.heat),
+    status: normalizeHotTagStatus(item.status),
+    uses: asWholeNumber(item.uses),
+    views: asWholeNumber(item.views),
+    inquiries: asWholeNumber(item.inquiries),
+    orders: asWholeNumber(item.orders),
+    lastUsed: item.lastUsed ? normalizeDateValue(item.lastUsed) : "",
+    note: String(item.note || "").trim(),
+  };
+}
+
+function saveHotTags() {
+  const byKey = new Map();
+  state.hotTags
+    .map(normalizeHotTag)
+    .filter((item) => item.tag)
+    .forEach((item) => {
+      byKey.set(`${item.platform}:${item.tag.toLowerCase()}`, item);
+    });
+  state.hotTags = Array.from(byKey.values()).sort((a, b) => {
+    const platformOrder = PLATFORMS.indexOf(a.platform) - PLATFORMS.indexOf(b.platform);
+    if (platformOrder) return platformOrder;
+    const heatOrder = HOT_TAG_HEATS.indexOf(a.heat) - HOT_TAG_HEATS.indexOf(b.heat);
+    if (heatOrder) return heatOrder;
+    return b.uses - a.uses || a.tag.localeCompare(b.tag);
+  });
+  storage.set("hotTags", state.hotTags);
+}
+
+function upsertHotTag(tagValue, platformValue, extras = {}) {
+  const normalized = normalizeHotTag({
+    ...extras,
+    tag: tagValue,
+    platform: platformValue || extras.platform || qs("#platformInput")?.value || "TikTok",
+  });
+  if (!normalized.tag) return null;
+  const existing = state.hotTags.find(
+    (item) => item.platform === normalized.platform && item.tag.toLowerCase() === normalized.tag.toLowerCase(),
+  );
+  if (existing) {
+    Object.assign(existing, { ...normalized, id: existing.id });
+  } else {
+    state.hotTags.unshift(normalized);
+  }
+  saveHotTags();
+  return existing || normalized;
+}
+
+function hotTagFromForm() {
+  const existing = state.hotTags.find((item) => item.id === state.editingHotTagId);
+  return normalizeHotTag({
+    id: existing?.id || `hot-tag-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    tag: qs("#hotTagName").value,
+    platform: qs("#hotTagPlatform").value,
+    category: qs("#hotTagCategory").value,
+    heat: qs("#hotTagHeat").value,
+    status: qs("#hotTagStatus").value,
+    uses: qs("#hotTagUses").value,
+    views: qs("#hotTagViews").value,
+    inquiries: qs("#hotTagInquiries").value,
+    orders: existing?.orders || 0,
+    lastUsed: existing?.lastUsed || "",
+    note: qs("#hotTagNote").value,
+  });
+}
+
+function resetHotTagForm() {
+  state.editingHotTagId = null;
+  const form = qs("#hotTagForm");
+  if (!form) return;
+  form.reset();
+  qs("#hotTagPlatform").value = qs("#platformInput")?.value || "TikTok";
+  qs("#hotTagCategory").value = "产品词";
+  qs("#hotTagHeat").value = "中";
+  qs("#hotTagStatus").value = "推荐使用";
+  qs("#hotTagUses").value = "0";
+  qs("#hotTagViews").value = "0";
+  qs("#hotTagInquiries").value = "0";
+  qs("#hotTagFormTitle").textContent = "保存热门标签";
+  qs("#hotTagMode").textContent = "新增";
+  qs("#hotTagMode").classList.add("good");
+  qs("#hotTagSubmitLabel").textContent = "保存标签";
+  qs("#hotTagCancelBtn").hidden = true;
+}
+
+function fillHotTagForm(item) {
+  state.editingHotTagId = item.id;
+  qs("#hotTagName").value = item.tag;
+  qs("#hotTagPlatform").value = item.platform;
+  qs("#hotTagCategory").value = item.category;
+  qs("#hotTagHeat").value = item.heat;
+  qs("#hotTagStatus").value = item.status;
+  qs("#hotTagUses").value = item.uses;
+  qs("#hotTagViews").value = item.views;
+  qs("#hotTagInquiries").value = item.inquiries;
+  qs("#hotTagNote").value = item.note;
+  qs("#hotTagFormTitle").textContent = "编辑热门标签";
+  qs("#hotTagMode").textContent = "编辑中";
+  qs("#hotTagMode").classList.remove("good");
+  qs("#hotTagSubmitLabel").textContent = "保存修改";
+  qs("#hotTagCancelBtn").hidden = false;
+  qs("#hotTags").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function filteredHotTags() {
+  const search = String(qs("#hotTagSearch")?.value || "").trim().toLowerCase();
+  const platform = qs("#hotTagPlatformFilter")?.value || "all";
+  const category = qs("#hotTagCategoryFilter")?.value || "all";
+  return state.hotTags.filter((item) => {
+    const matchesText = !search || `${item.tag} ${item.note}`.toLowerCase().includes(search);
+    const matchesPlatform = platform === "all" || item.platform === platform;
+    const matchesCategory = category === "all" || item.category === category;
+    return matchesText && matchesPlatform && matchesCategory;
+  });
+}
+
+function hotTagStatusClass(item) {
+  if (item.status === "推荐使用") return "good";
+  if (item.status === "暂停使用") return "danger";
+  return "warn";
+}
+
+function insertHotTagIntoComposer(item) {
+  const tag = normalizeHashtag(item.tag);
+  if (!tag) return;
+  if (!state.hashtags.includes(tag)) {
+    state.hashtags.push(tag);
+    saveHashtags();
+  }
+  const captionInput = qs("#captionInput");
+  if (captionInput && !captionInput.value.includes(tag)) {
+    const current = captionInput.value.trim();
+    captionInput.value = current ? `${current}\n\n${tag}` : tag;
+  }
+  item.uses += 1;
+  item.lastUsed = toISODate(new Date());
+  saveHotTags();
+  renderHashtags();
+  renderHotTags();
+  refreshIcons();
+  qs("#composer").scrollIntoView({ behavior: "smooth", block: "start" });
+  showToast("标签已插入创作区");
+}
+
+function hashtagsFromText(value) {
+  return Array.from(new Set(String(value || "").match(/#[\p{L}\p{N}_-]+/gu) || [])).map(normalizeHashtag).filter(Boolean);
+}
+
+function applyHotTagPerformance(record, sourceText = "") {
+  const tags = hashtagsFromText(sourceText);
+  if (!tags.length) return;
+  let changed = false;
+  tags.forEach((tag) => {
+    const item =
+      state.hotTags.find((entry) => entry.platform === record.platform && entry.tag.toLowerCase() === tag.toLowerCase()) ||
+      upsertHotTag(tag, record.platform, { category: "其他", status: "观察中" });
+    if (!item) return;
+    item.uses += asWholeNumber(record.postCount || 1);
+    item.views += asWholeNumber(record.views);
+    item.inquiries += asWholeNumber(record.inquiries);
+    item.orders += asWholeNumber(record.orders);
+    item.lastUsed = record.date;
+    changed = true;
+  });
+  if (changed) saveHotTags();
+}
+
 function firstAssetId() {
   return state.assets[0]?.id || "";
 }
@@ -3172,6 +3657,7 @@ function appDataCounts(data = state) {
     inbox: toBackupArray(data.inbox).length,
     campaigns: toBackupArray(data.campaigns).length,
     hashtags: toBackupArray(data.hashtags).length,
+    hotTags: toBackupArray(data.hotTags).length,
   };
 }
 
@@ -3203,6 +3689,7 @@ function createFullBackup(reason = "manual") {
       inbox: state.inbox,
       campaigns: state.campaigns,
       hashtags: state.hashtags,
+      hotTags: state.hotTags,
       sheetUrl: storage.get("sheetUrl", ""),
       theme: storage.get("theme", "light"),
     },
@@ -3232,6 +3719,7 @@ function saveAllAppData() {
   storage.set("campaigns", state.campaigns);
   storage.set("records", state.records);
   storage.set("hashtags", state.hashtags);
+  storage.set("hotTags", state.hotTags);
 }
 
 function applyFullBackup(payload) {
@@ -3246,6 +3734,10 @@ function applyFullBackup(payload) {
   state.campaigns = toBackupArray(data.campaigns);
   state.records = toBackupArray(data.records).map(normalizeRecord);
   state.hashtags = toBackupArray(data.hashtags).map(normalizeHashtag).filter(Boolean);
+  state.hotTags = toBackupArray(data.hotTags).map(normalizeHotTag).filter((item) => item.tag);
+  if (!state.hotTags.length && state.hashtags.length) {
+    state.hotTags = state.hashtags.map((tag) => normalizeHotTag({ tag, platform: "TikTok", category: "其他" }));
+  }
 
   storage.set("sheetUrl", data.sheetUrl || "");
   storage.set("theme", data.theme || storage.get("theme", "light"));
@@ -3335,7 +3827,7 @@ function renderBackupInfo(payload = readLocalBackup()) {
   status.textContent = "已备份";
   status.classList.add("good");
   status.classList.remove("warn");
-  details.textContent = `最近备份：${savedText}；发布记录 ${counts.records} 条，排期 ${counts.queue} 条，待办 ${counts.tasks} 条，素材 ${counts.assets} 条。`;
+  details.textContent = `最近备份：${savedText}；发布记录 ${counts.records} 条，排期 ${counts.queue} 条，待办 ${counts.tasks} 条，素材 ${counts.assets} 条，热门标签 ${counts.hotTags} 条。`;
 }
 
 async function writeBackupSnapshot(reason = "auto") {
@@ -4008,6 +4500,79 @@ function renderHashtags() {
     : `<div class="empty-state">暂无快捷标签。添加常用标签后，可以一键复制到文案里。</div>`;
 }
 
+function renderHotTags() {
+  const grid = qs("#hotTagGrid");
+  const summary = qs("#hotTagSummary");
+  const count = qs("#hotTagCount");
+  if (!grid || !summary || !count) return;
+
+  const tags = filteredHotTags();
+  const active = tags.filter((item) => item.status === "推荐使用").length;
+  const highHeat = tags.filter((item) => item.heat === "高").length;
+  const totalViews = sum(tags, "views");
+  const totalInquiries = sum(tags, "inquiries");
+  count.textContent = `${tags.length} 条`;
+  summary.innerHTML = `
+    <div><span>推荐</span><strong>${active}</strong></div>
+    <div><span>高热度</span><strong>${highHeat}</strong></div>
+    <div><span>曝光</span><strong>${formatCompact(totalViews)}</strong></div>
+    <div><span>询盘</span><strong>${formatCompact(totalInquiries)}</strong></div>
+  `;
+
+  if (!state.hotTags.length) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        还没有保存热门标签。先手动录入常用标签，之后可以按平台筛选、复制和插入创作区。
+      </div>
+    `;
+    return;
+  }
+
+  if (!tags.length) {
+    grid.innerHTML = `<div class="empty-state">当前筛选条件下没有标签。</div>`;
+    return;
+  }
+
+  grid.innerHTML = tags
+    .map(
+      (item) => `
+        <article class="hot-tag-card" data-id="${escapeHtml(item.id)}">
+          <div class="hot-tag-top">
+            <div>
+              <strong class="hot-tag-name">${escapeHtml(item.tag)}</strong>
+              <div class="hot-tag-meta">
+                <span>${escapeHtml(item.platform)}</span>
+                <span>${escapeHtml(item.category)}</span>
+                <span>已用 ${item.uses}</span>
+              </div>
+            </div>
+            <span class="status-pill ${hotTagStatusClass(item)}">${escapeHtml(item.status)}</span>
+          </div>
+          <div class="hot-tag-stats">
+            <div><span>热度</span><strong>${escapeHtml(item.heat)}</strong></div>
+            <div><span>曝光</span><strong>${formatCompact(item.views)}</strong></div>
+            <div><span>询盘</span><strong>${formatCompact(item.inquiries)}</strong></div>
+            <div><span>最近</span><strong>${escapeHtml(item.lastUsed || "未使用")}</strong></div>
+          </div>
+          ${item.note ? `<p>${escapeHtml(item.note)}</p>` : ""}
+          <div class="hot-tag-actions">
+            <button class="action-btn primary small-action" type="button" data-action="use-hot-tag">
+              <i data-lucide="plus"></i>
+              <span>插入</span>
+            </button>
+            <button class="icon-btn small" type="button" data-action="edit-hot-tag" title="编辑标签">
+              <i data-lucide="pencil"></i>
+            </button>
+            <button class="icon-btn small" type="button" data-action="delete-hot-tag" title="删除标签">
+              <i data-lucide="trash-2"></i>
+            </button>
+          </div>
+        </article>
+      `,
+    )
+    .join("");
+}
+
 function renderThemeIcon() {
   const isDark = document.documentElement.classList.contains("dark");
   qs("#themeToggle").innerHTML = `<i data-lucide="${isDark ? "moon" : "sun-medium"}"></i>`;
@@ -4078,6 +4643,7 @@ function renderAll() {
   renderInbox();
   renderCampaigns();
   renderHashtags();
+  renderHotTags();
   renderThemeIcon();
   renderSyncInfo();
   refreshIcons();
@@ -4175,8 +4741,7 @@ function addPublishRecord(post) {
     return true;
   }
 
-  state.records.unshift(
-    normalizeRecord({
+  const record = normalizeRecord({
       id: `r-${Date.now()}`,
       date: post.date || toISODate(new Date()),
       platform: normalizePlatform(post.platform),
@@ -4185,8 +4750,9 @@ function addPublishRecord(post) {
       campaign: post.campaign || "排期发布",
       note: `由排期自动记录：${post.title}`,
       sourcePostId: post.id,
-    }),
-  );
+    });
+  state.records.unshift(record);
+  applyHotTagPerformance(record, post.title);
   saveRecords();
   return true;
 }
@@ -4489,6 +5055,7 @@ function bindQueue() {
       renderQueue();
       renderCalendar();
       renderDataViews();
+      renderHotTags();
       refreshIcons();
       showToast(recorded ? "已发布，并自动记入发布数量" : "已标记为发布");
     }
@@ -4615,11 +5182,13 @@ function bindRecords() {
       showToast("数据记录已更新");
     } else {
       state.records.unshift(record);
+      applyHotTagPerformance(record, `${record.campaign} ${record.note}`);
       showToast("数据记录已保存");
     }
     saveRecords();
     resetRecordForm();
     renderDataViews();
+    renderHotTags();
     refreshIcons();
   });
 
@@ -4779,9 +5348,11 @@ function bindHashtags() {
       return;
     }
     state.hashtags.push(tag);
+    upsertHotTag(tag, qs("#platformInput")?.value || "TikTok", { category: "其他", status: "观察中" });
     saveHashtags();
     input.value = "";
     renderHashtags();
+    renderHotTags();
     refreshIcons();
     showToast("标签已添加");
   };
@@ -4809,6 +5380,96 @@ function bindHashtags() {
     renderHashtags();
     refreshIcons();
     showToast("标签已删除");
+  });
+}
+
+function bindHotTags() {
+  const form = qs("#hotTagForm");
+  const grid = qs("#hotTagGrid");
+  if (!form || !grid) return;
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const tag = hotTagFromForm();
+    if (!tag.tag) {
+      showToast("请先填写标签");
+      return;
+    }
+
+    const duplicate = state.hotTags.find(
+      (item) =>
+        item.id !== tag.id &&
+        item.platform === tag.platform &&
+        item.tag.toLowerCase() === tag.tag.toLowerCase(),
+    );
+    if (duplicate) {
+      showToast("同平台已存在这个标签");
+      return;
+    }
+
+    if (state.editingHotTagId) {
+      state.hotTags = state.hotTags.map((item) => (item.id === tag.id ? tag : item));
+      showToast("热门标签已更新");
+    } else {
+      state.hotTags.unshift(tag);
+      showToast("热门标签已保存");
+    }
+    saveHotTags();
+    resetHotTagForm();
+    renderHotTags();
+    refreshIcons();
+  });
+
+  qs("#hotTagResetBtn").addEventListener("click", () => {
+    resetHotTagForm();
+    showToast("标签录入区已清空");
+  });
+
+  qs("#hotTagCancelBtn").addEventListener("click", () => {
+    resetHotTagForm();
+  });
+
+  ["#hotTagSearch", "#hotTagPlatformFilter", "#hotTagCategoryFilter"].forEach((selector) => {
+    qs(selector).addEventListener(selector === "#hotTagSearch" ? "input" : "change", () => {
+      renderHotTags();
+      refreshIcons();
+    });
+  });
+
+  qs("#copySelectedHotTagsBtn").addEventListener("click", () => {
+    const tags = filteredHotTags().map((item) => item.tag);
+    if (!tags.length) {
+      showToast("当前列表没有可复制的标签");
+      return;
+    }
+    copyText(tags.join(" "), "当前标签列表已复制");
+  });
+
+  grid.addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    const card = event.target.closest(".hot-tag-card");
+    if (!button || !card) return;
+    const item = state.hotTags.find((tag) => tag.id === card.dataset.id);
+    if (!item) return;
+
+    if (button.dataset.action === "use-hot-tag") {
+      insertHotTagIntoComposer(item);
+    }
+
+    if (button.dataset.action === "edit-hot-tag") {
+      fillHotTagForm(item);
+      refreshIcons();
+    }
+
+    if (button.dataset.action === "delete-hot-tag") {
+      if (!window.confirm("确定删除这个热门标签吗？")) return;
+      state.hotTags = state.hotTags.filter((tag) => tag.id !== item.id);
+      saveHotTags();
+      resetHotTagForm();
+      renderHotTags();
+      refreshIcons();
+      showToast("热门标签已删除");
+    }
   });
 }
 
@@ -4881,6 +5542,7 @@ function bindComposer() {
     renderQueue();
     renderCalendar();
     renderDataViews();
+    renderHotTags();
     refreshIcons();
     if (isEditing) {
       showToast(post.status === "已发布" ? "排期已保存，并同步发布数据" : "排期已保存");
@@ -5283,6 +5945,7 @@ function bindAll() {
   bindTasks();
   bindInbox();
   bindHashtags();
+  bindHotTags();
   bindBriefCheck();
   bindComposer();
   bindCampaigns();
