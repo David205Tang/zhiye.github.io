@@ -224,12 +224,12 @@ a {
 }
 
 .topbar {
-  min-height: 88px;
+  min-height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  margin-bottom: 18px;
+  margin-bottom: 8px;
 }
 
 h1,
@@ -337,6 +337,22 @@ i[data-lucide]::before {
   content: "•";
 }
 
+i[data-lucide].smw-icon-rendered::before {
+  content: "" !important;
+  display: none;
+}
+
+i[data-lucide].smw-icon-rendered svg {
+  width: 1em;
+  height: 1em;
+  display: block;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
 i[data-lucide="layout-dashboard"]::before { content: "▦"; }
 i[data-lucide="bar-chart-3"]::before { content: "▥"; }
 i[data-lucide="calendar-days"]::before { content: "□"; }
@@ -356,6 +372,8 @@ i[data-lucide="filter"]::before { content: "▽"; }
 i[data-lucide="refresh-cw"]::before { content: "↻"; }
 i[data-lucide="chevron-left"]::before { content: "<"; }
 i[data-lucide="chevron-right"]::before { content: ">"; }
+i[data-lucide="chevron-up"]::before { content: "^"; }
+i[data-lucide="chevron-down"]::before { content: "v"; }
 i[data-lucide="file-spreadsheet"]::before { content: "▤"; }
 i[data-lucide="rotate-ccw"]::before { content: "↺"; }
 i[data-lucide="cloud"]::before { content: "☁"; }
@@ -368,6 +386,8 @@ i[data-lucide="paperclip"]::before { content: "@"; }
 i[data-lucide="sparkles"]::before { content: "*"; }
 i[data-lucide="copy"]::before { content: "⧉"; }
 i[data-lucide="calendar-plus"]::before { content: "+"; }
+i[data-lucide="bell"]::before { content: "!"; }
+i[data-lucide="book-open"]::before { content: "i"; }
 i[data-lucide="save"]::before { content: "✓"; }
 i[data-lucide="pencil"]::before { content: "✎"; }
 i[data-lucide="trash-2"]::before { content: "×"; }
@@ -411,7 +431,7 @@ i[data-lucide="scale"]::before { content: "≡"; }
 
 .section {
   scroll-margin-top: 18px;
-  padding: 20px 0 26px;
+  padding: 12px 0 22px;
 }
 
 .section-head {
@@ -578,11 +598,58 @@ i[data-lucide="scale"]::before { content: "≡"; }
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  align-items: stretch;
+  align-items: start;
 }
 
 .span-2 {
   grid-column: span 2;
+}
+
+.insight-grid {
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+.insight-grid .panel,
+.operations-grid .panel {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.insight-grid .chart-wrap {
+  flex: 1 1 auto;
+  min-height: 252px;
+}
+
+.insight-grid .funnel {
+  flex: 1 1 auto;
+  align-content: center;
+}
+
+.operations-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(320px, 0.92fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.publishing-panel,
+.task-panel {
+  min-width: 0;
+}
+
+.publishing-panel .queue-list,
+.task-panel .task-list {
+  flex: 1 1 auto;
+  min-height: 180px;
+}
+
+.queue-list .calendar-post,
+.task-list .task-empty {
+  min-height: 100%;
+  display: grid;
+  align-content: center;
 }
 
 .panel,
@@ -597,7 +664,7 @@ i[data-lucide="scale"]::before { content: "≡"; }
 }
 
 .panel {
-  min-height: 280px;
+  min-height: 0;
   padding: 16px;
 }
 
@@ -701,6 +768,39 @@ i[data-lucide="scale"]::before { content: "≡"; }
 .inbox-list {
   display: grid;
   gap: 10px;
+}
+
+.queue-list,
+.task-list {
+  align-content: start;
+  max-height: clamp(220px, 32vh, 360px);
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-gutter: stable;
+}
+
+.task-panel {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-panel.is-collapsed {
+  align-self: start;
+  min-height: 0;
+}
+
+.task-panel.is-collapsed .task-list {
+  display: none;
+}
+
+.task-panel-tools {
+  flex: 0 0 auto;
+  justify-content: flex-end;
+}
+
+.task-panel-tools .action-btn {
+  width: auto;
 }
 
 .queue-item,
@@ -966,6 +1066,184 @@ i[data-lucide="scale"]::before { content: "≡"; }
   margin-top: 6px;
   color: var(--muted);
   font-size: 11px;
+}
+
+.calendar-holidays {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.calendar-holiday-pill {
+  padding: 7px 8px;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 26%, var(--line));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent-2) 10%, var(--surface));
+}
+
+.calendar-holiday-pill strong,
+.calendar-holiday-pill span {
+  display: block;
+  font-size: 11px;
+}
+
+.calendar-holiday-pill span {
+  margin-top: 3px;
+  color: var(--muted);
+}
+
+.holiday-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.9fr) minmax(380px, 1.4fr);
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+.holiday-panel {
+  min-width: 0;
+  align-self: start;
+}
+
+.holiday-library-panel {
+  height: var(--holiday-library-height, auto);
+  max-height: var(--holiday-library-height, none);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.holiday-library-panel.is-collapsed {
+  min-height: 0;
+  height: auto;
+  max-height: none;
+}
+
+.holiday-library-panel.is-collapsed .holiday-list {
+  display: none;
+}
+
+.holiday-library-tools {
+  align-items: center;
+}
+
+.holiday-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.holiday-controls .search-box {
+  min-width: 0;
+}
+
+.holiday-reminders,
+.holiday-list {
+  display: grid;
+  align-content: start;
+  grid-auto-rows: max-content;
+  gap: 8px;
+}
+
+.holiday-library-panel .holiday-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-gutter: stable;
+}
+
+.holiday-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.holiday-card[open] {
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
+}
+
+.holiday-card summary {
+  min-height: 58px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.holiday-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.holiday-title {
+  display: grid;
+  gap: 4px;
+}
+
+.holiday-title strong {
+  font-size: 14px;
+}
+
+.holiday-title span,
+.holiday-date {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.holiday-date {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.holiday-detail {
+  display: grid;
+  gap: 10px;
+  padding: 0 12px 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.holiday-detail p {
+  margin: 0;
+}
+
+.holiday-playbook {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.holiday-playbook li {
+  padding: 8px;
+  border-radius: 6px;
+  background: var(--surface-soft);
+}
+
+.holiday-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.holiday-source {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.holiday-empty {
+  min-height: 80px;
 }
 
 .asset-toolbar {
@@ -1238,6 +1516,7 @@ select {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  align-items: start;
   margin-bottom: 12px;
 }
 
@@ -1540,6 +1819,7 @@ select {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.8fr);
   gap: 12px;
+  align-items: start;
 }
 
 .composer-panel,
@@ -1702,6 +1982,7 @@ select {
   display: grid;
   grid-template-columns: repeat(3, minmax(220px, 1fr));
   gap: 12px;
+  align-items: start;
 }
 
 .campaign-item {
@@ -1813,8 +2094,13 @@ select {
     position: static;
     height: auto;
     border-right: 0;
-    border-bottom: 1px solid var(--line);
-    padding: 16px 16px 10px;
+    border-bottom: 0;
+    padding: 0;
+  }
+
+  .brand,
+  .sidebar-block {
+    display: none;
   }
 
   .nav-list {
@@ -1823,7 +2109,7 @@ select {
     right: 0;
     bottom: 0;
     z-index: 45;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 4px;
     padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
     border-top: 1px solid var(--line);
@@ -1856,7 +2142,7 @@ select {
 
   .main {
     padding: 18px;
-    padding-bottom: calc(18px + 170px);
+    padding-bottom: calc(18px + 120px);
   }
 
   .topbar,
@@ -1868,8 +2154,10 @@ select {
   .composer-layout,
   .data-layout,
   .sync-grid,
+  .holiday-layout,
   .hot-tag-layout,
   .overview-grid,
+  .operations-grid,
   .campaign-grid {
     grid-template-columns: 1fr;
   }
@@ -1898,29 +2186,50 @@ select {
   .calendar-grid {
     grid-template-columns: repeat(7, 210px);
   }
+
+  .holiday-library-panel {
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .holiday-library-panel:not(.is-collapsed) .holiday-list {
+    max-height: min(380px, 52vh);
+    overflow-y: auto;
+    padding-right: 4px;
+  }
 }
 
 @media (max-width: 560px) {
   .main {
     padding: 14px;
-    padding-bottom: calc(14px + 170px);
+    padding-bottom: calc(14px + 120px);
   }
 
   h1 {
     font-size: 25px;
   }
 
-  .metric-grid,
   .asset-grid,
   .asset-form-grid,
   .hot-tag-grid,
   .hot-tag-grid-form,
   .hot-tag-filters,
   .hot-tag-summary,
+  .holiday-controls,
   .field-row,
   .task-form,
   .record-grid {
     grid-template-columns: 1fr;
+  }
+
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .metric {
+    min-height: 112px;
+    padding: 14px;
   }
 
   .sidebar-block {
@@ -1936,12 +2245,38 @@ select {
   }
 
   .nav-list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .nav-item {
     height: 46px;
     padding: 0 3px;
+  }
+
+  .top-actions {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .top-actions .icon-btn {
+    width: 48px;
+    height: 44px;
+  }
+
+  .top-actions .action-btn {
+    min-height: 44px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+
+  .panel,
+  .composer-panel,
+  .brief-panel,
+  .record-form,
+  .table-panel,
+  .sync-panel {
+    padding: 14px;
   }
 
   .overview-controls {
@@ -1962,12 +2297,13 @@ select {
   .platform-tabs,
   .period-tabs {
     width: 100%;
+    display: grid;
+    justify-self: stretch;
+    overflow-x: visible;
   }
 
   .period-tabs {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    overflow-x: visible;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .period-tab {
@@ -1976,17 +2312,21 @@ select {
   }
 
   .platform-tabs {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    overflow-x: visible;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
-  .tab {
-    width: 100%;
+  .tab,
+  .period-tab {
+    flex: initial;
+    min-height: 38px;
+    padding: 0 4px;
+    font-size: 12px;
+    white-space: nowrap;
   }
 
   .tab:first-child {
-    grid-column: 1 / -1;
+    grid-column: auto;
+    min-width: 0;
   }
 
   .queue-item,
@@ -2012,6 +2352,21 @@ select {
   .asset-toolbar select {
     width: 100%;
   }
+
+  .task-panel-tools {
+    width: auto;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  .task-panel-tools .action-btn {
+    width: auto;
+  }
+
+  .queue-list,
+  .task-list {
+    max-height: 300px;
+  }
 }
 
 </style>
@@ -2036,10 +2391,6 @@ select {
             <i data-lucide="bar-chart-3"></i>
             <span>数据</span>
           </a>
-          <a class="nav-item" href="#sync" data-section="sync">
-            <i data-lucide="cloud"></i>
-            <span>同步</span>
-          </a>
           <a class="nav-item" href="#calendar" data-section="calendar">
             <i data-lucide="calendar-days"></i>
             <span>排期</span>
@@ -2055,6 +2406,10 @@ select {
           <a class="nav-item" href="#hotTags" data-section="hotTags">
             <i data-lucide="hash"></i>
             <span>标签</span>
+          </a>
+          <a class="nav-item" href="#sync" data-section="sync">
+            <i data-lucide="cloud"></i>
+            <span>同步</span>
           </a>
           <a class="nav-item" href="#inbox" data-section="inbox">
             <i data-lucide="messages-square"></i>
@@ -2139,7 +2494,7 @@ select {
             <span class="status-pill warn" id="dataSourceStatus">本地手动记录</span>
           </article>
 
-          <div class="overview-grid">
+          <div class="overview-grid insight-grid">
             <article class="panel span-2">
               <div class="panel-head">
                 <div>
@@ -2164,7 +2519,10 @@ select {
               <div class="funnel" id="funnelList"></div>
             </article>
 
-            <article class="panel span-2">
+          </div>
+
+          <div class="operations-grid">
+            <article class="panel publishing-panel">
               <div class="panel-head">
                 <div>
                   <p class="eyebrow">Publishing</p>
@@ -2206,14 +2564,20 @@ select {
               <div class="queue-list" id="queueList"></div>
             </article>
 
-            <article class="panel">
+            <article class="panel task-panel" id="taskPanel">
               <div class="panel-head">
                 <div>
                   <p class="eyebrow">Tasks</p>
                   <h3>每日待办</h3>
                   <span class="panel-subline" id="taskDateLabel">按所选日期查看</span>
                 </div>
-                <span class="status-pill warn" id="taskCount">0 项</span>
+                <div class="compact-tools task-panel-tools">
+                  <span class="status-pill warn" id="taskCount">0 项</span>
+                  <button class="action-btn ghost small-action" id="taskListToggleBtn" type="button" aria-expanded="true">
+                    <i data-lucide="chevron-up"></i>
+                    <span>收起</span>
+                  </button>
+                </div>
               </div>
               <form class="task-form" id="taskForm">
                 <label class="task-field">
@@ -2391,140 +2755,6 @@ select {
           </article>
         </section>
 
-        <section id="sync" class="section">
-          <div class="section-head">
-            <div>
-              <p class="eyebrow">Shared Sheet</p>
-              <h2>共享表格同步</h2>
-            </div>
-            <span class="status-pill warn">第一版：手动同步</span>
-          </div>
-
-          <article class="source-panel sync-source">
-            <div>
-              <p class="eyebrow">How It Works</p>
-              <h3>多人协作方式</h3>
-            </div>
-            <p>
-              建一张在线表格，所有人按同一列名填写数据。每个人可以把表格导出的 CSV 导入工作台，也可以把工作台数据导出后贴回共享表格。
-              这一版不自动登录平台，也不自动连接云端，适合先验证多人记录流程。
-            </p>
-            <span class="status-pill" id="syncRecordCount">0 条</span>
-          </article>
-
-          <article class="sync-panel backup-panel">
-            <div class="panel-head">
-              <div>
-                <p class="eyebrow">Backup</p>
-                <h3>数据保险箱</h3>
-              </div>
-              <span class="status-pill warn" id="backupStatus">等待备份</span>
-            </div>
-            <p class="sync-copy">
-              工作台会自动保存到本机浏览器，并额外写入本机备份镜像。为了避免清理浏览器数据、换电脑、换浏览器造成丢失，建议定期下载完整备份。
-            </p>
-            <div class="form-actions">
-              <button class="action-btn primary" id="exportBackupBtn" type="button">
-                <i data-lucide="download"></i>
-                <span>下载完整备份</span>
-              </button>
-              <button class="action-btn ghost" id="importBackupBtn" type="button">
-                <i data-lucide="replace"></i>
-                <span>导入完整备份</span>
-              </button>
-              <button class="action-btn ghost" id="restoreLocalBackupBtn" type="button">
-                <i data-lucide="rotate-ccw"></i>
-                <span>恢复本机备份</span>
-              </button>
-              <input id="backupFileInput" type="file" accept="application/json,.json" hidden />
-            </div>
-            <div class="sync-note">
-              <strong>备份范围</strong>
-              <span id="backupDetails">保存或导入数据后，会自动写入本机备份镜像。完整备份包含发布记录、排期、每日待办、素材库、活动、评论状态、快捷标签和热门标签。</span>
-            </div>
-          </article>
-
-          <div class="sync-grid">
-            <article class="sync-panel">
-              <div class="panel-head">
-                <div>
-                  <p class="eyebrow">Setup</p>
-                  <h3>共享表设置</h3>
-                </div>
-                <i data-lucide="table"></i>
-              </div>
-              <label class="sync-field">
-                <span>共享表链接</span>
-                <input id="sheetUrlInput" type="url" placeholder="粘贴 Google Sheets / Excel Online 链接，便于以后打开" />
-              </label>
-              <div class="form-actions">
-                <button class="action-btn primary" id="saveSheetUrlBtn" type="button">
-                  <i data-lucide="save"></i>
-                  <span>保存链接</span>
-                </button>
-                <a class="action-btn ghost" id="openSheetBtn" href="#" target="_blank" rel="noreferrer">
-                  <i data-lucide="external-link"></i>
-                  <span>打开共享表</span>
-                </a>
-              </div>
-              <div class="sync-note">
-                <strong>建议列名</strong>
-                <span>记录ID、日期、平台、账号、发布数量、曝光、点赞、评论、分享、收藏、询盘、订单、成交额USD、活动、备注</span>
-              </div>
-            </article>
-
-            <article class="sync-panel">
-              <div class="panel-head">
-                <div>
-                  <p class="eyebrow">Export</p>
-                  <h3>导出给共享表</h3>
-                </div>
-                <i data-lucide="download"></i>
-              </div>
-              <p class="sync-copy">把当前工作台数据导出成共享表格式，其他人可以直接导入或复制到在线表格。</p>
-              <div class="form-actions">
-                <button class="action-btn primary" id="exportSharedCsvBtn" type="button">
-                  <i data-lucide="download"></i>
-                  <span>下载共享 CSV</span>
-                </button>
-                <button class="action-btn ghost" id="copySharedCsvBtn" type="button">
-                  <i data-lucide="copy"></i>
-                  <span>复制 CSV</span>
-                </button>
-                <button class="action-btn ghost" id="downloadTemplateBtn" type="button">
-                  <i data-lucide="file-spreadsheet"></i>
-                  <span>下载空模板</span>
-                </button>
-              </div>
-            </article>
-          </div>
-
-          <article class="sync-panel">
-            <div class="panel-head">
-              <div>
-                <p class="eyebrow">Import</p>
-                <h3>从共享表导入</h3>
-              </div>
-              <span class="status-pill" id="importPreview">等待粘贴 CSV</span>
-            </div>
-            <textarea id="importCsvInput" class="sync-textarea" rows="8" placeholder="从共享表导出 CSV 后粘贴到这里。第一行需要是表头。"></textarea>
-            <div class="form-actions">
-              <button class="action-btn primary" id="mergeImportBtn" type="button">
-                <i data-lucide="git-merge"></i>
-                <span>合并导入</span>
-              </button>
-              <button class="action-btn ghost" id="replaceImportBtn" type="button">
-                <i data-lucide="replace"></i>
-                <span>覆盖导入</span>
-              </button>
-              <button class="action-btn ghost" id="clearImportBtn" type="button">
-                <i data-lucide="rotate-ccw"></i>
-                <span>清空</span>
-              </button>
-            </div>
-          </article>
-        </section>
-
         <section id="calendar" class="section">
           <div class="section-head">
             <div>
@@ -2544,6 +2774,56 @@ select {
               </button>
             </div>
           </div>
+          <div class="holiday-layout" id="holidayMonitor">
+            <article class="panel holiday-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Holiday Monitor</p>
+                  <h3>节日提醒</h3>
+                </div>
+                <span class="status-pill warn" id="holidayReminderCount">0 个</span>
+              </div>
+              <div class="holiday-controls">
+                <select id="holidayRegionFilter" aria-label="节日地区">
+                  <option value="all">全部地区</option>
+                  <option value="US">美国</option>
+                  <option value="CN">中国</option>
+                  <option value="Global">全球/电商</option>
+                </select>
+                <select id="holidayWindowFilter" aria-label="提醒范围">
+                  <option value="14">未来 14 天</option>
+                  <option value="30">未来 30 天</option>
+                  <option value="60">未来 60 天</option>
+                  <option value="90">未来 90 天</option>
+                  <option value="365">未来 1 年</option>
+                </select>
+                <label class="search-box">
+                  <i data-lucide="search"></i>
+                  <input id="holidaySearch" type="search" placeholder="搜索节日、国家、关键词" />
+                </label>
+              </div>
+              <div class="holiday-reminders" id="holidayReminderList"></div>
+              <p class="holiday-source">节日提醒基于本地节日库计算；网页关闭时不会后台推送，手机锁屏提醒可后续同步到 Google Calendar。</p>
+            </article>
+
+            <article class="panel holiday-panel holiday-library-panel" id="holidayLibraryPanel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Holiday Library</p>
+                  <h3>节日介绍</h3>
+                </div>
+                <div class="compact-tools holiday-library-tools">
+                  <span class="status-pill" id="holidayLibraryCount">0 条</span>
+                  <button class="action-btn ghost small-action" id="holidayLibraryToggleBtn" type="button" aria-expanded="true">
+                    <i data-lucide="chevron-up"></i>
+                    <span>收起</span>
+                  </button>
+                </div>
+              </div>
+              <div class="holiday-list" id="holidayList"></div>
+            </article>
+          </div>
+
           <div class="calendar-grid" id="calendarGrid"></div>
         </section>
 
@@ -2935,6 +3215,140 @@ select {
           <div class="hot-tag-grid" id="hotTagGrid"></div>
         </section>
 
+        <section id="sync" class="section">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Shared Sheet</p>
+              <h2>共享表格同步</h2>
+            </div>
+            <span class="status-pill warn">第一版：手动同步</span>
+          </div>
+
+          <article class="source-panel sync-source">
+            <div>
+              <p class="eyebrow">How It Works</p>
+              <h3>多人协作方式</h3>
+            </div>
+            <p>
+              建一张在线表格，所有人按同一列名填写数据。每个人可以把表格导出的 CSV 导入工作台，也可以把工作台数据导出后贴回共享表格。
+              这一版不自动登录平台，也不自动连接云端，适合先验证多人记录流程。
+            </p>
+            <span class="status-pill" id="syncRecordCount">0 条</span>
+          </article>
+
+          <article class="sync-panel backup-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Backup</p>
+                <h3>数据保险箱</h3>
+              </div>
+              <span class="status-pill warn" id="backupStatus">等待备份</span>
+            </div>
+            <p class="sync-copy">
+              工作台会自动保存到本机浏览器，并额外写入本机备份镜像。为了避免清理浏览器数据、换电脑、换浏览器造成丢失，建议定期下载完整备份。
+            </p>
+            <div class="form-actions">
+              <button class="action-btn primary" id="exportBackupBtn" type="button">
+                <i data-lucide="download"></i>
+                <span>下载完整备份</span>
+              </button>
+              <button class="action-btn ghost" id="importBackupBtn" type="button">
+                <i data-lucide="replace"></i>
+                <span>导入完整备份</span>
+              </button>
+              <button class="action-btn ghost" id="restoreLocalBackupBtn" type="button">
+                <i data-lucide="rotate-ccw"></i>
+                <span>恢复本机备份</span>
+              </button>
+              <input id="backupFileInput" type="file" accept="application/json,.json" hidden />
+            </div>
+            <div class="sync-note">
+              <strong>备份范围</strong>
+              <span id="backupDetails">保存或导入数据后，会自动写入本机备份镜像。完整备份包含发布记录、排期、每日待办、素材库、活动、评论状态、快捷标签、热门标签和节日提醒设置。</span>
+            </div>
+          </article>
+
+          <div class="sync-grid">
+            <article class="sync-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Setup</p>
+                  <h3>共享表设置</h3>
+                </div>
+                <i data-lucide="table"></i>
+              </div>
+              <label class="sync-field">
+                <span>共享表链接</span>
+                <input id="sheetUrlInput" type="url" placeholder="粘贴 Google Sheets / Excel Online 链接，便于以后打开" />
+              </label>
+              <div class="form-actions">
+                <button class="action-btn primary" id="saveSheetUrlBtn" type="button">
+                  <i data-lucide="save"></i>
+                  <span>保存链接</span>
+                </button>
+                <a class="action-btn ghost" id="openSheetBtn" href="#" target="_blank" rel="noreferrer">
+                  <i data-lucide="external-link"></i>
+                  <span>打开共享表</span>
+                </a>
+              </div>
+              <div class="sync-note">
+                <strong>建议列名</strong>
+                <span>记录ID、日期、平台、账号、发布数量、曝光、点赞、评论、分享、收藏、询盘、订单、成交额USD、活动、备注</span>
+              </div>
+            </article>
+
+            <article class="sync-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="eyebrow">Export</p>
+                  <h3>导出给共享表</h3>
+                </div>
+                <i data-lucide="download"></i>
+              </div>
+              <p class="sync-copy">把当前工作台数据导出成共享表格式，其他人可以直接导入或复制到在线表格。</p>
+              <div class="form-actions">
+                <button class="action-btn primary" id="exportSharedCsvBtn" type="button">
+                  <i data-lucide="download"></i>
+                  <span>下载共享 CSV</span>
+                </button>
+                <button class="action-btn ghost" id="copySharedCsvBtn" type="button">
+                  <i data-lucide="copy"></i>
+                  <span>复制 CSV</span>
+                </button>
+                <button class="action-btn ghost" id="downloadTemplateBtn" type="button">
+                  <i data-lucide="file-spreadsheet"></i>
+                  <span>下载空模板</span>
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <article class="sync-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Import</p>
+                <h3>从共享表导入</h3>
+              </div>
+              <span class="status-pill" id="importPreview">等待粘贴 CSV</span>
+            </div>
+            <textarea id="importCsvInput" class="sync-textarea" rows="8" placeholder="从共享表导出 CSV 后粘贴到这里。第一行需要是表头。"></textarea>
+            <div class="form-actions">
+              <button class="action-btn primary" id="mergeImportBtn" type="button">
+                <i data-lucide="git-merge"></i>
+                <span>合并导入</span>
+              </button>
+              <button class="action-btn ghost" id="replaceImportBtn" type="button">
+                <i data-lucide="replace"></i>
+                <span>覆盖导入</span>
+              </button>
+              <button class="action-btn ghost" id="clearImportBtn" type="button">
+                <i data-lucide="rotate-ccw"></i>
+                <span>清空</span>
+              </button>
+            </div>
+          </article>
+        </section>
+
         <section id="inbox" class="section">
           <div class="section-head">
             <div>
@@ -2979,6 +3393,10 @@ const state = {
   editingTaskId: null,
   editingQueueId: null,
   editingHotTagId: null,
+  holidayRegion: "all",
+  holidayWindow: 30,
+  holidayLibraryCollapsed: false,
+  taskListCollapsed: false,
   assets: [],
   queue: [],
   tasks: [],
@@ -2993,6 +3411,155 @@ const PLATFORMS = ["TikTok", "YouTube", "Instagram", "Facebook"];
 const HOT_TAG_CATEGORIES = ["产品词", "场景词", "人群词", "节日词", "爆款词", "品牌词", "其他"];
 const HOT_TAG_HEATS = ["高", "中", "低"];
 const HOT_TAG_STATUSES = ["推荐使用", "观察中", "暂停使用"];
+const HOLIDAY_REGION_LABELS = {
+  all: "全部地区",
+  US: "美国",
+  CN: "中国",
+  Global: "全球/电商",
+};
+const HOLIDAY_DEFAULT_LEADS = [30, 14, 7, 3, 1];
+
+const CHINA_LUNAR_HOLIDAYS = [
+  {
+    key: "cn-spring-festival",
+    name: "春节",
+    region: "CN",
+    dates: { 2026: "2026-02-17", 2027: "2027-02-06", 2028: "2028-01-26" },
+    period: { 2026: "中国假期：2月15日-23日", 2027: "中国假期：2月4日-12日", 2028: "按节日日期提醒" },
+    priority: "高",
+    intro: "春节是中国最重要的传统节日，核心是团圆、返乡、礼赠和新年开工。社媒内容适合围绕祝福、年货、工厂开工、礼品和新年计划展开。",
+    playbook: ["提前 30 天准备年货和礼品内容", "提前 14 天安排春节祝福和工厂假期说明", "节后 3 天发布开工、补货和新品预热"],
+  },
+  {
+    key: "cn-lantern",
+    name: "元宵节",
+    region: "CN",
+    dates: { 2026: "2026-03-03", 2027: "2027-02-20", 2028: "2028-02-09" },
+    priority: "中",
+    intro: "元宵节是春节后的收尾节点，常见元素有灯会、团圆、汤圆和祝福。适合做春节活动收尾、返场优惠或新年第一轮互动。",
+    playbook: ["做春节活动收尾提醒", "发布团圆和灯会相关短内容", "复盘春节内容表现并筛选可复投素材"],
+  },
+  {
+    key: "cn-qingming",
+    name: "清明节",
+    region: "CN",
+    dates: { 2026: "2026-04-05", 2027: "2027-04-05", 2028: "2028-04-04" },
+    period: { 2026: "中国假期：4月4日-6日", 2027: "中国假期：4月3日-5日", 2028: "按节日日期提醒" },
+    priority: "中",
+    intro: "清明节兼具祭祖、踏青和春季出行属性。营销内容应克制，适合春季场景、户外使用、轻量复盘和节后计划。",
+    playbook: ["避免过度促销语气", "侧重春季场景和产品使用环境", "节后安排新品或复盘内容"],
+  },
+  {
+    key: "cn-dragon-boat",
+    name: "端午节",
+    region: "CN",
+    dates: { 2026: "2026-06-19", 2027: "2027-06-09", 2028: "2028-05-28" },
+    period: { 2026: "中国假期：6月19日-21日", 2027: "中国假期：6月9日", 2028: "按节日日期提醒" },
+    priority: "中",
+    intro: "端午节常见元素包括粽子、龙舟、香囊和健康祈福。适合做季节礼品、传统文化、家庭场景和夏季产品内容。",
+    playbook: ["提前准备节日视觉素材", "结合健康、家庭、夏季场景", "节前 7 天开始短视频预热"],
+  },
+  {
+    key: "cn-qixi",
+    name: "七夕",
+    region: "CN",
+    dates: { 2026: "2026-08-19", 2027: "2027-08-08", 2028: "2028-08-26" },
+    priority: "高",
+    intro: "七夕是中国传统爱情节日，适合礼品、情侣、仪式感、美妆、家居、配饰等方向。内容重点是情感场景和送礼理由。",
+    playbook: ["提前 14 天准备礼品推荐内容", "提前 7 天集中发布情侣和送礼场景", "当天做限时提醒和评论互动"],
+  },
+  {
+    key: "cn-mid-autumn",
+    name: "中秋节",
+    region: "CN",
+    dates: { 2026: "2026-09-25", 2027: "2027-09-15", 2028: "2028-10-03" },
+    period: { 2026: "中国假期：9月25日-27日", 2027: "中国假期：9月15日", 2028: "按节日日期提醒" },
+    priority: "高",
+    intro: "中秋节强调团圆、礼赠、月亮和家庭场景。适合礼盒、家居、食品、包装、企业祝福和节前采购提醒。",
+    playbook: ["提前 30 天准备礼赠和包装素材", "提前 14 天发布送礼场景", "节后复盘询盘和成交来源"],
+  },
+];
+
+const CHINA_FIXED_HOLIDAYS = [
+  {
+    key: "cn-labor",
+    name: "劳动节",
+    region: "CN",
+    month: 5,
+    day: 1,
+    period: "中国假期通常覆盖 5 月初",
+    priority: "中",
+    intro: "劳动节是假期出行、生活消费和工厂生产展示的重要节点。适合发布工厂、团队、生产线、出游场景和节后补货内容。",
+    playbook: ["提前 14 天准备假期前后排期", "发布团队和生产线内容", "节后提醒补货和交期"],
+  },
+  {
+    key: "cn-national-day",
+    name: "国庆节",
+    region: "CN",
+    month: 10,
+    day: 1,
+    period: "中国假期通常为 10月1日-7日",
+    priority: "高",
+    intro: "国庆节是中国长假和消费节点，适合做节前采购、出行场景、品牌祝福、秋季新品和节后补货提醒。",
+    playbook: ["提前 30 天准备秋季和长假内容", "提前 14 天安排节前采购提醒", "节后 3 天做复盘和补货"],
+  },
+  {
+    key: "cn-520",
+    name: "520",
+    region: "Global",
+    month: 5,
+    day: 20,
+    priority: "中",
+    intro: "520 是中文互联网爱情表达节点，适合礼品、情侣、私域互动和轻促销内容，节日语气可以更年轻化。",
+    playbook: ["准备情侣礼品和表白场景", "结合评论区互动话题", "筛选可复用到七夕的素材"],
+  },
+  {
+    key: "cn-618",
+    name: "618",
+    region: "Global",
+    month: 6,
+    day: 18,
+    priority: "高",
+    intro: "618 是中国年中电商大促节点，适合做优惠、爆品、库存、限时活动和平台内容集中测试。",
+    playbook: ["提前 30 天准备爆品素材", "提前 14 天测试标题和标签", "当天跟踪曝光、询盘和成交"],
+  },
+  {
+    key: "cn-double-11",
+    name: "双11",
+    region: "Global",
+    month: 11,
+    day: 11,
+    priority: "高",
+    intro: "双11是中国重要电商大促之一，适合爆品、优惠、直播、私域承接和广告投放节奏管理。",
+    playbook: ["提前 30 天确定主推产品", "提前 14 天完成素材和排期", "当天重点监控询盘、订单和 ROAS"],
+  },
+  {
+    key: "cn-double-12",
+    name: "双12",
+    region: "Global",
+    month: 12,
+    day: 12,
+    priority: "中",
+    intro: "双12更适合作为双11后的复购、清仓和补充促销节点，可复用双11高表现素材并做轻量调整。",
+    playbook: ["复用双11胜出素材", "强调补货、清仓和复购", "复盘年末内容效率"],
+  },
+];
+
+const US_HOLIDAY_RULES = [
+  { key: "us-new-year", name: "New Year's Day", date: (year) => dateFromParts(year, 1, 1), priority: "中", intro: "美国新年适合发布年度计划、开工、愿景、上新和客户祝福内容。B2B 内容可以强调新年度采购和交付计划。", playbook: ["提前 14 天准备年度总结和新品预热", "当天发布祝福和开工计划", "节后跟进采购询盘"] },
+  { key: "us-valentines", name: "Valentine's Day", date: (year) => dateFromParts(year, 2, 14), priority: "高", intro: "情人节是美国重要礼品和情感消费节点，适合礼品、包装、美妆、家居、饰品和情侣场景内容。", playbook: ["提前 30 天准备礼品推荐", "提前 14 天加强情侣场景", "当天做最后购买提醒"] },
+  { key: "us-easter", name: "Easter", date: (year) => easterDate(year), priority: "中", intro: "复活节有家庭聚会、彩蛋、春季装饰和儿童活动属性。适合春季新品、礼品包装、家居装饰和亲子内容。", playbook: ["提前 14 天准备春季视觉", "发布家庭和亲子场景", "节后复盘春季内容表现"] },
+  { key: "us-mothers-day", name: "Mother's Day", date: (year) => nthWeekdayOfMonth(year, 5, 0, 2), priority: "高", intro: "母亲节是美国强礼品节点，适合礼品、鲜花、家居、美妆、首饰、手工和家庭情感内容。", playbook: ["提前 30 天准备送礼理由", "提前 14 天发布礼品清单", "节前 3 天强化最后提醒"] },
+  { key: "us-fathers-day", name: "Father's Day", date: (year) => nthWeekdayOfMonth(year, 6, 0, 3), priority: "中", intro: "父亲节适合工具、户外、车品、家居、礼品和家庭场景。内容可强调实用、耐用和陪伴。", playbook: ["准备男性礼品和实用场景", "提前 7 天发布推荐清单", "节后观察转化标签"] },
+  { key: "us-independence", name: "Independence Day", date: (year) => dateFromParts(year, 7, 4), period: (year) => federalObservedNote(year, 7, 4), priority: "高", intro: "美国独立日适合夏季、户外、派对、国旗配色、家居装饰和促销内容。视觉上可以使用红白蓝和夏日氛围。", playbook: ["提前 14 天准备红白蓝视觉", "发布户外派对和家庭场景", "当天关注互动和转化"] },
+  { key: "us-labor-day", name: "Labor Day", date: (year) => nthWeekdayOfMonth(year, 9, 1, 1), priority: "中", intro: "美国劳动节常被视为夏季结束和返校/秋季消费节点。适合清仓、秋季上新、户外收尾和返校内容。", playbook: ["提前 14 天准备夏末促销", "安排返校和秋季场景", "节后切换秋季内容"] },
+  { key: "us-halloween", name: "Halloween", date: (year) => dateFromParts(year, 10, 31), priority: "高", intro: "万圣节适合创意装饰、服饰、派对、灯光、家居、宠物和趣味短视频。内容可更大胆、有反差和互动性。", playbook: ["提前 30 天准备主题素材", "提前 14 天测试创意标题", "当天做互动和用户生成内容"] },
+  { key: "us-veterans-day", name: "Veterans Day", date: (year) => dateFromParts(year, 11, 11), period: (year) => federalObservedNote(year, 11, 11), priority: "低", intro: "退伍军人节语气应尊重、克制，适合品牌致敬、公益、社区和低调表达，不适合强促销。", playbook: ["避免夸张促销", "用尊重语气表达感谢", "只安排轻量品牌内容"] },
+  { key: "us-thanksgiving", name: "Thanksgiving", date: (year) => nthWeekdayOfMonth(year, 11, 4, 4), priority: "高", intro: "感恩节是美国家庭团聚和年末购物季入口，适合感谢客户、家庭场景、礼品、厨房家居和黑五预热。", playbook: ["提前 30 天准备黑五和感恩节内容", "提前 7 天发布感谢客户内容", "当天衔接黑五活动"] },
+  { key: "us-black-friday", name: "Black Friday", date: (year) => addDaysValue(nthWeekdayOfMonth(year, 11, 4, 4), 1), priority: "高", intro: "黑五是美国重要购物节点，适合爆品、折扣、库存、广告投放和强转化内容。", playbook: ["提前 30 天确定主推产品", "提前 14 天完成落地页和素材", "当天每个平台记录曝光、询盘和订单"] },
+  { key: "us-cyber-monday", name: "Cyber Monday", date: (year) => addDaysValue(nthWeekdayOfMonth(year, 11, 4, 4), 4), priority: "高", intro: "网一适合线上优惠、电子产品、工具类产品和黑五后续转化。可复用黑五高表现素材并加强线上购买理由。", playbook: ["复用黑五胜出素材", "强调线上下单和限时优惠", "复盘黑五到网一转化"] },
+  { key: "us-christmas", name: "Christmas", date: (year) => dateFromParts(year, 12, 25), period: (year) => federalObservedNote(year, 12, 25), priority: "高", intro: "圣诞节是美国年末重要礼品和家庭消费节点，适合礼品、装饰、包装、祝福、家庭场景和年末总结。", playbook: ["提前 45 天准备圣诞视觉", "提前 30 天开始礼品内容", "节后做年末复盘和新年预热"] },
+];
 const PERIODS = {
   day: { label: "当日", compare: "较前日", trend: "当日" },
   week: { label: "本周", compare: "较上周", trend: "本周" },
@@ -3050,6 +3617,7 @@ const BACKUP_KEY = "latest";
 const BACKUP_META_KEYS = new Set(["fullBackup", "lastBackupAt"]);
 let backupReady = false;
 let backupTimer = null;
+let navClickLockUntil = 0;
 
 const storage = {
   get(key, fallback) {
@@ -3094,6 +3662,12 @@ function initState() {
   if (!state.hotTags.length && state.hashtags.length) {
     state.hotTags = state.hashtags.map((tag) => normalizeHotTag({ tag, platform: "TikTok", category: "其他" }));
   }
+  state.holidayRegion = HOLIDAY_REGION_LABELS[storage.get("holidayRegion", "all")] ? storage.get("holidayRegion", "all") : "all";
+  state.holidayWindow = [14, 30, 60, 90, 365].includes(asWholeNumber(storage.get("holidayWindow", 30)))
+    ? asWholeNumber(storage.get("holidayWindow", 30))
+    : 30;
+  state.holidayLibraryCollapsed = Boolean(storage.get("holidayLibraryCollapsed", false));
+  state.taskListCollapsed = Boolean(storage.get("taskListCollapsed", false));
   saveAssets();
   saveQueue();
   storage.set("tasks", state.tasks);
@@ -3147,6 +3721,10 @@ function pad(value) {
 
 function toISODate(date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+function dateFromParts(year, month, day) {
+  return toISODate(new Date(year, month - 1, day));
 }
 
 function normalizeDateValue(value) {
@@ -3619,6 +4197,256 @@ function recordsInPeriod(offset = 0) {
   );
 }
 
+function addDaysValue(value, days) {
+  return toISODate(addDays(parseLocalDate(value), days));
+}
+
+function daysBetween(startValue, endValue) {
+  const start = parseLocalDate(startValue);
+  const end = parseLocalDate(endValue);
+  return Math.round((end.getTime() - start.getTime()) / 86400000);
+}
+
+function nthWeekdayOfMonth(year, month, weekday, nth) {
+  const date = new Date(year, month - 1, 1);
+  const offset = (weekday - date.getDay() + 7) % 7;
+  date.setDate(1 + offset + (nth - 1) * 7);
+  return toISODate(date);
+}
+
+function federalObservedNote(year, month, day) {
+  const actual = new Date(year, month - 1, day);
+  const observed = new Date(actual);
+  if (actual.getDay() === 6) observed.setDate(actual.getDate() - 1);
+  if (actual.getDay() === 0) observed.setDate(actual.getDate() + 1);
+  const observedText = toISODate(observed);
+  const actualText = toISODate(actual);
+  return observedText === actualText ? "美国联邦假日：当天" : `美国联邦观察日：${observedText}`;
+}
+
+function easterDate(year) {
+  const a = year % 19;
+  const b = Math.floor(year / 100);
+  const c = year % 100;
+  const d = Math.floor(b / 4);
+  const e = b % 4;
+  const f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4);
+  const k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31);
+  const day = ((h + l - 7 * m + 114) % 31) + 1;
+  return dateFromParts(year, month, day);
+}
+
+function holidayYears() {
+  const baseYear = parseLocalDate(state.focusDate || toISODate(new Date())).getFullYear();
+  return [baseYear - 1, baseYear, baseYear + 1];
+}
+
+function normalizeHoliday(definition, year, date) {
+  const period =
+    typeof definition.period === "function"
+      ? definition.period(year)
+      : typeof definition.period === "object"
+        ? definition.period[year] || ""
+        : definition.period || "";
+  return {
+    id: `${definition.key}-${year}`,
+    key: definition.key,
+    name: definition.name,
+    region: definition.region || "US",
+    date,
+    year,
+    period,
+    priority: definition.priority || "中",
+    intro: definition.intro || "",
+    playbook: definition.playbook || [],
+    leadDays: definition.leadDays || HOLIDAY_DEFAULT_LEADS,
+  };
+}
+
+function allHolidays() {
+  const years = holidayYears();
+  const holidays = [];
+  years.forEach((year) => {
+    US_HOLIDAY_RULES.forEach((definition) => {
+      holidays.push(normalizeHoliday({ ...definition, region: "US" }, year, definition.date(year)));
+    });
+    CHINA_FIXED_HOLIDAYS.forEach((definition) => {
+      holidays.push(normalizeHoliday(definition, year, dateFromParts(year, definition.month, definition.day)));
+    });
+    CHINA_LUNAR_HOLIDAYS.forEach((definition) => {
+      const date = definition.dates[year];
+      if (date) holidays.push(normalizeHoliday(definition, year, date));
+    });
+  });
+  return holidays.sort((a, b) => a.date.localeCompare(b.date) || a.name.localeCompare(b.name, "zh-CN"));
+}
+
+function filteredHolidays() {
+  const query = String(qs("#holidaySearch")?.value || "").trim().toLowerCase();
+  return allHolidays().filter((holiday) => {
+    const matchesRegion = state.holidayRegion === "all" || holiday.region === state.holidayRegion;
+    const haystack = [holiday.name, HOLIDAY_REGION_LABELS[holiday.region], holiday.priority, holiday.intro, ...holiday.playbook]
+      .join(" ")
+      .toLowerCase();
+    return matchesRegion && (!query || haystack.includes(query));
+  });
+}
+
+function daysUntilHoliday(holiday) {
+  return daysBetween(toISODate(new Date()), holiday.date);
+}
+
+function holidayTimingText(days) {
+  if (days === 0) return "今天";
+  if (days > 0) return `${days} 天后`;
+  return `已过 ${Math.abs(days)} 天`;
+}
+
+function holidayStage(days) {
+  if (days > 30) return "观察期：确定选品、素材方向和平台节奏";
+  if (days > 14) return "准备期：完成主题、脚本、标签和素材清单";
+  if (days > 7) return "制作期：拍摄、剪辑、封面和标题测试";
+  if (days > 3) return "预热期：开始发布预热内容并观察互动";
+  if (days > 0) return "临近提醒：检查排期、库存、客服话术和投放";
+  if (days === 0) return "当天执行：按平台发布并记录曝光、询盘和订单";
+  return "复盘期：记录数据，筛选可复投素材";
+}
+
+function holidayCard(holiday, options = {}) {
+  const days = daysUntilHoliday(holiday);
+  const region = HOLIDAY_REGION_LABELS[holiday.region] || holiday.region;
+  const isSoon = days >= 0 && days <= 7;
+  const statusClass = isSoon ? "warn" : holiday.priority === "高" ? "good" : "";
+  const defaultOpen = Boolean(options.open);
+  return `
+    <details class="holiday-card" data-id="${escapeHtml(holiday.id)}" ${defaultOpen ? "open" : ""}>
+      <summary>
+        <div class="holiday-title">
+          <strong>${escapeHtml(holiday.name)}</strong>
+          <span>${escapeHtml(region)} · ${escapeHtml(holiday.priority)}优先级 · ${escapeHtml(holidayStage(days))}</span>
+        </div>
+        <div class="holiday-date">
+          <span class="status-pill ${statusClass}">${escapeHtml(holidayTimingText(days))}</span>
+          <span>${escapeHtml(holiday.date)}</span>
+        </div>
+      </summary>
+      <div class="holiday-detail">
+        <p>${escapeHtml(holiday.intro)}</p>
+        ${holiday.period ? `<p><strong>日期说明：</strong>${escapeHtml(holiday.period)}</p>` : ""}
+        <ul class="holiday-playbook">
+          ${holiday.playbook.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ul>
+        <div class="holiday-actions">
+          <button class="action-btn ghost small-action" type="button" data-action="holiday-task">
+            <i data-lucide="plus"></i>
+            <span>加入今日待办</span>
+          </button>
+        </div>
+      </div>
+    </details>
+  `;
+}
+
+function renderHolidayLibraryToggle() {
+  const button = qs("#holidayLibraryToggleBtn");
+  if (!button) return;
+  button.setAttribute("aria-expanded", String(!state.holidayLibraryCollapsed));
+  button.innerHTML = `
+    <i data-lucide="${state.holidayLibraryCollapsed ? "chevron-down" : "chevron-up"}"></i>
+    <span>${state.holidayLibraryCollapsed ? "展开" : "收起"}</span>
+  `;
+}
+
+function syncHolidayLibraryLayout() {
+  const monitor = qs("#holidayMonitor");
+  const reminderPanel = qs("#holidayMonitor .holiday-panel:first-child");
+  const libraryPanel = qs("#holidayLibraryPanel");
+  if (!monitor || !reminderPanel || !libraryPanel) return;
+
+  libraryPanel.classList.toggle("is-collapsed", state.holidayLibraryCollapsed);
+  libraryPanel.style.removeProperty("--holiday-library-height");
+  if (state.holidayLibraryCollapsed || window.matchMedia("(max-width: 860px)").matches) return;
+
+  const reminderHeight = Math.ceil(reminderPanel.getBoundingClientRect().height);
+  if (reminderHeight > 0) {
+    libraryPanel.style.setProperty("--holiday-library-height", `${reminderHeight}px`);
+  }
+}
+
+function renderHolidayMonitor() {
+  const reminderList = qs("#holidayReminderList");
+  const holidayList = qs("#holidayList");
+  if (!reminderList || !holidayList) return;
+
+  const regionFilter = qs("#holidayRegionFilter");
+  const windowFilter = qs("#holidayWindowFilter");
+  if (regionFilter) regionFilter.value = state.holidayRegion;
+  if (windowFilter) windowFilter.value = String(state.holidayWindow);
+
+  const visible = filteredHolidays();
+  const reminders = visible
+    .filter((holiday) => {
+      const days = daysUntilHoliday(holiday);
+      return days >= 0 && days <= state.holidayWindow;
+    })
+    .sort((a, b) => daysUntilHoliday(a) - daysUntilHoliday(b) || a.name.localeCompare(b.name, "zh-CN"));
+
+  qs("#holidayReminderCount").textContent = `${reminders.length} 个`;
+  qs("#holidayReminderCount").classList.toggle("good", reminders.length > 0);
+  qs("#holidayReminderCount").classList.toggle("warn", reminders.length === 0);
+  qs("#holidayLibraryCount").textContent = `${visible.length} 条`;
+
+  reminderList.innerHTML = reminders.length
+    ? reminders.slice(0, 8).map((holiday, index) => holidayCard(holiday, { open: index === 0 })).join("")
+    : `<div class="empty-state holiday-empty">当前筛选范围内没有临近节日。可以把提醒范围切到 60 天、90 天或未来 1 年。</div>`;
+
+  holidayList.innerHTML = visible.length
+    ? visible
+        .filter((holiday) => daysUntilHoliday(holiday) >= -30)
+        .slice(0, 18)
+        .map((holiday) => holidayCard(holiday))
+        .join("")
+    : `<div class="empty-state holiday-empty">没有匹配的节日。</div>`;
+
+  renderHolidayLibraryToggle();
+  syncHolidayLibraryLayout();
+}
+
+function holidaysForDate(dateKey) {
+  return allHolidays().filter(
+    (holiday) => holiday.date === dateKey && (state.holidayRegion === "all" || holiday.region === state.holidayRegion),
+  );
+}
+
+function addHolidayTask(holiday) {
+  const date = toISODate(new Date());
+  const title = `节日提醒：${holiday.name}（${holiday.date}）`;
+  const exists = state.tasks.some((task) => task.date === date && task.title === title);
+  if (exists) {
+    showToast("今日待办里已经有这个节日提醒");
+    return;
+  }
+  state.tasks.unshift(
+    normalizeTask({
+      date,
+      title,
+      owner: "节日营销",
+      done: false,
+    }),
+  );
+  saveTasks();
+  renderTasks();
+  renderSidebarFocus();
+  refreshIcons();
+  showToast("已加入今日待办");
+}
+
 function assetById(id) {
   return (
     state.assets.find((item) => item.id === id) ||
@@ -3690,6 +4518,14 @@ function createFullBackup(reason = "manual") {
       campaigns: state.campaigns,
       hashtags: state.hashtags,
       hotTags: state.hotTags,
+      holidaySettings: {
+        region: state.holidayRegion,
+        window: state.holidayWindow,
+        libraryCollapsed: state.holidayLibraryCollapsed,
+      },
+      taskSettings: {
+        listCollapsed: state.taskListCollapsed,
+      },
       sheetUrl: storage.get("sheetUrl", ""),
       theme: storage.get("theme", "light"),
     },
@@ -3720,6 +4556,10 @@ function saveAllAppData() {
   storage.set("records", state.records);
   storage.set("hashtags", state.hashtags);
   storage.set("hotTags", state.hotTags);
+  storage.set("holidayRegion", state.holidayRegion);
+  storage.set("holidayWindow", state.holidayWindow);
+  storage.set("holidayLibraryCollapsed", state.holidayLibraryCollapsed);
+  storage.set("taskListCollapsed", state.taskListCollapsed);
 }
 
 function applyFullBackup(payload) {
@@ -3738,6 +4578,12 @@ function applyFullBackup(payload) {
   if (!state.hotTags.length && state.hashtags.length) {
     state.hotTags = state.hashtags.map((tag) => normalizeHotTag({ tag, platform: "TikTok", category: "其他" }));
   }
+  state.holidayRegion = HOLIDAY_REGION_LABELS[data.holidaySettings?.region] ? data.holidaySettings.region : "all";
+  state.holidayWindow = [14, 30, 60, 90, 365].includes(asWholeNumber(data.holidaySettings?.window))
+    ? asWholeNumber(data.holidaySettings.window)
+    : 30;
+  state.holidayLibraryCollapsed = Boolean(data.holidaySettings?.libraryCollapsed);
+  state.taskListCollapsed = Boolean(data.taskSettings?.listCollapsed);
 
   storage.set("sheetUrl", data.sheetUrl || "");
   storage.set("theme", data.theme || storage.get("theme", "light"));
@@ -4198,6 +5044,7 @@ function renderCalendar() {
   qs("#calendarGrid").innerHTML = days
     .map((day, index) => {
       const dateKey = toISODate(day);
+      const dayHolidays = holidaysForDate(dateKey);
       const dayPosts = state.queue.filter((post) => {
         if (post.date) return post.date === dateKey;
         return post.dayOffset === index && state.weekOffset === 0;
@@ -4209,6 +5056,20 @@ function renderCalendar() {
             <span>${dayPosts.length} 条</span>
           </div>
           <div class="day-posts">
+            ${
+              dayHolidays.length
+                ? `<div class="calendar-holidays">${dayHolidays
+                    .map(
+                      (holiday) => `
+                        <div class="calendar-holiday-pill">
+                          <strong>${escapeHtml(holiday.name)}</strong>
+                          <span>${escapeHtml(HOLIDAY_REGION_LABELS[holiday.region] || holiday.region)} · ${escapeHtml(holiday.priority)}优先级</span>
+                        </div>
+                      `,
+                    )
+                    .join("")}</div>`
+                : ""
+            }
             ${
               dayPosts.length
                 ? dayPosts
@@ -4389,6 +5250,18 @@ function renderRecords() {
   renderRecordsTable();
 }
 
+function renderTaskListToggle() {
+  const panel = qs("#taskPanel");
+  const button = qs("#taskListToggleBtn");
+  if (!panel || !button) return;
+  panel.classList.toggle("is-collapsed", state.taskListCollapsed);
+  button.setAttribute("aria-expanded", String(!state.taskListCollapsed));
+  button.innerHTML = `
+    <i data-lucide="${state.taskListCollapsed ? "chevron-down" : "chevron-up"}"></i>
+    <span>${state.taskListCollapsed ? "展开" : "收起"}</span>
+  `;
+}
+
 function renderTasks() {
   const dayTasks = tasksForSelectedDate();
   const openCount = dayTasks.filter((task) => !task.done).length;
@@ -4421,6 +5294,7 @@ function renderTasks() {
         .join("")
     : `<div class="empty-state task-empty">这一天还没有待办，可以在上方添加。</div>`;
 
+  renderTaskListToggle();
   renderSidebarFocus();
 }
 
@@ -4638,6 +5512,7 @@ function renderAll() {
   renderDataViews();
   renderQueue();
   renderCalendar();
+  renderHolidayMonitor();
   renderAssets();
   renderTasks();
   renderInbox();
@@ -4649,10 +5524,66 @@ function renderAll() {
   refreshIcons();
 }
 
+const LOCAL_ICON_PATHS = {
+  "layout-dashboard": `<rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect>`,
+  "bar-chart-3": `<path d="M4 20V10"></path><path d="M12 20V4"></path><path d="M20 20v-7"></path>`,
+  "calendar-days": `<rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M8 2v4"></path><path d="M16 2v4"></path><path d="M3 10h18"></path><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M16 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path>`,
+  images: `<rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="10" r="1.5"></circle><path d="m21 15-4.5-4.5L5 19"></path>`,
+  "pen-line": `<path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>`,
+  hash: `<path d="M4 9h16"></path><path d="M4 15h16"></path><path d="M10 3 8 21"></path><path d="M16 3l-2 18"></path>`,
+  cloud: `<path d="M17.5 19H7a4 4 0 1 1 .8-7.9 5.5 5.5 0 0 1 10.6 1.9 3 3 0 0 1-.9 6Z"></path>`,
+  "messages-square": `<path d="M21 14a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"></path><path d="M8 9h8"></path><path d="M8 13h5"></path>`,
+  megaphone: `<path d="m3 11 18-5v12L3 13Z"></path><path d="M11.5 15.5 14 21"></path><path d="M6 13v4a2 2 0 0 0 2 2h1"></path>`,
+  "sun-medium": `<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>`,
+  moon: `<path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.5 6.5 0 0 0 9.8 9.8Z"></path>`,
+  download: `<path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path>`,
+  plus: `<path d="M12 5v14"></path><path d="M5 12h14"></path>`,
+  eye: `<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle>`,
+  heart: `<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path>`,
+  "message-circle": `<path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 21l1.9-5.3A8.5 8.5 0 1 1 21 11.5Z"></path>`,
+  "shopping-bag": `<path d="M6 8h12l-1 13H7Z"></path><path d="M9 8a3 3 0 0 1 6 0"></path>`,
+  filter: `<path d="M3 5h18"></path><path d="M7 12h10"></path><path d="M10 19h4"></path>`,
+  "refresh-cw": `<path d="M21 12a9 9 0 0 1-15.5 6.2"></path><path d="M3 12A9 9 0 0 1 18.5 5.8"></path><path d="M18 3v5h-5"></path><path d="M6 21v-5h5"></path>`,
+  "chevron-left": `<path d="m15 18-6-6 6-6"></path>`,
+  "chevron-right": `<path d="m9 18 6-6-6-6"></path>`,
+  "chevron-up": `<path d="m18 15-6-6-6 6"></path>`,
+  "chevron-down": `<path d="m6 9 6 6 6-6"></path>`,
+  "file-spreadsheet": `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6"></path><path d="M8 13h8"></path><path d="M8 17h8"></path><path d="M10 9v10"></path>`,
+  "rotate-ccw": `<path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 3v6h6"></path>`,
+  table: `<rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 10h18"></path><path d="M9 5v14"></path><path d="M15 5v14"></path>`,
+  "external-link": `<path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"></path>`,
+  "git-merge": `<circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><path d="M6 9v3a6 6 0 0 0 6 6h3"></path><path d="M6 9v12"></path>`,
+  replace: `<path d="M3 7h12"></path><path d="m11 3 4 4-4 4"></path><path d="M21 17H9"></path><path d="m13 13-4 4 4 4"></path>`,
+  search: `<circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path>`,
+  paperclip: `<path d="m21.4 11.6-8.5 8.5a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 1 1-2.8-2.8l8.5-8.5"></path>`,
+  sparkles: `<path d="m12 3 1.7 4.6L18 9l-4.3 1.4L12 15l-1.7-4.6L6 9l4.3-1.4Z"></path><path d="M5 3v4"></path><path d="M3 5h4"></path><path d="M19 17v4"></path><path d="M17 19h4"></path>`,
+  copy: `<rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>`,
+  "calendar-plus": `<rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M8 2v4"></path><path d="M16 2v4"></path><path d="M3 10h18"></path><path d="M12 14v5"></path><path d="M9.5 16.5h5"></path>`,
+  bell: `<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path>`,
+  "book-open": `<path d="M2 4h7a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2Z"></path><path d="M22 4h-7a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h8Z"></path>`,
+  save: `<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path><path d="M17 21v-8H7v8"></path><path d="M7 3v5h8"></path>`,
+  pencil: `<path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>`,
+  "trash-2": `<path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path>`,
+  x: `<path d="M18 6 6 18"></path><path d="m6 6 12 12"></path>`,
+  check: `<path d="m20 6-11 11-5-5"></path>`,
+  reply: `<path d="m9 17-6-5 6-5"></path><path d="M3 12h12a6 6 0 0 1 6 6v1"></path>`,
+  send: `<path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path>`,
+  scale: `<path d="M16 16 22 6"></path><path d="M8 16 2 6"></path><path d="M12 3v18"></path><path d="M3 6h18"></path><path d="M5 16h6"></path><path d="M13 16h6"></path>`,
+};
+
 function refreshIcons() {
   if (window.lucide) {
     window.lucide.createIcons();
+    return;
   }
+  qsa("i[data-lucide]").forEach((icon) => {
+    const name = icon.dataset.lucide;
+    const paths = LOCAL_ICON_PATHS[name] || LOCAL_ICON_PATHS.circle || LOCAL_ICON_PATHS.plus;
+    if (icon.dataset.renderedIcon === name) return;
+    icon.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${paths}</svg>`;
+    icon.classList.add("smw-icon-rendered");
+    icon.dataset.renderedIcon = name;
+  });
 }
 
 function resetRecordForm() {
@@ -4943,10 +5874,16 @@ function fillTaskForm(task) {
 }
 
 function bindNavigation() {
+  const setActiveNav = (sectionId) => {
+    qsa(".nav-item").forEach((item) => {
+      item.classList.toggle("active", item.dataset.section === sectionId);
+    });
+  };
+
   qsa(".nav-item").forEach((link) => {
     link.addEventListener("click", () => {
-      qsa(".nav-item").forEach((item) => item.classList.remove("active"));
-      link.classList.add("active");
+      navClickLockUntil = Date.now() + 900;
+      setActiveNav(link.dataset.section);
     });
   });
 
@@ -4956,9 +5893,8 @@ function bindNavigation() {
         .filter((entry) => entry.isIntersecting)
         .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
       if (!active) return;
-      qsa(".nav-item").forEach((item) => {
-        item.classList.toggle("active", item.dataset.section === active.target.id);
-      });
+      if (Date.now() < navClickLockUntil) return;
+      setActiveNav(active.target.id);
     },
     { rootMargin: "-20% 0px -65% 0px", threshold: [0.15, 0.3, 0.5] },
   );
@@ -4998,6 +5934,8 @@ function bindMonitorDate() {
     state.focusDate = input.value || toISODate(new Date());
     resetTaskForm();
     renderDataViews();
+    renderCalendar();
+    renderHolidayMonitor();
     renderTasks();
     refreshIcons();
   });
@@ -5070,6 +6008,57 @@ function bindCalendar() {
   qs("#nextWeek").addEventListener("click", () => {
     state.weekOffset += 1;
     renderCalendar();
+  });
+}
+
+function bindHolidayMonitor() {
+  const region = qs("#holidayRegionFilter");
+  const windowFilter = qs("#holidayWindowFilter");
+  const search = qs("#holidaySearch");
+  const monitor = qs("#holidayMonitor");
+  const libraryToggle = qs("#holidayLibraryToggleBtn");
+  if (!region || !windowFilter || !search || !monitor) return;
+
+  region.addEventListener("change", () => {
+    state.holidayRegion = HOLIDAY_REGION_LABELS[region.value] ? region.value : "all";
+    storage.set("holidayRegion", state.holidayRegion);
+    renderHolidayMonitor();
+    renderCalendar();
+    refreshIcons();
+  });
+
+  windowFilter.addEventListener("change", () => {
+    const nextWindow = asWholeNumber(windowFilter.value);
+    state.holidayWindow = [14, 30, 60, 90, 365].includes(nextWindow) ? nextWindow : 30;
+    storage.set("holidayWindow", state.holidayWindow);
+    renderHolidayMonitor();
+    refreshIcons();
+  });
+
+  search.addEventListener("input", () => {
+    renderHolidayMonitor();
+    refreshIcons();
+  });
+
+  if (libraryToggle) {
+    libraryToggle.addEventListener("click", () => {
+      state.holidayLibraryCollapsed = !state.holidayLibraryCollapsed;
+      storage.set("holidayLibraryCollapsed", state.holidayLibraryCollapsed);
+      renderHolidayLibraryToggle();
+      syncHolidayLibraryLayout();
+      refreshIcons();
+      showToast(state.holidayLibraryCollapsed ? "节日介绍已收起" : "节日介绍已展开");
+    });
+  }
+
+  window.addEventListener("resize", syncHolidayLibraryLayout);
+
+  monitor.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-action='holiday-task']");
+    const card = event.target.closest(".holiday-card");
+    if (!button || !card) return;
+    const holiday = allHolidays().find((item) => item.id === card.dataset.id);
+    if (holiday) addHolidayTask(holiday);
   });
 }
 
@@ -5232,6 +6221,14 @@ function bindRecords() {
 }
 
 function bindTasks() {
+  qs("#taskListToggleBtn")?.addEventListener("click", () => {
+    state.taskListCollapsed = !state.taskListCollapsed;
+    storage.set("taskListCollapsed", state.taskListCollapsed);
+    renderTaskListToggle();
+    refreshIcons();
+    showToast(state.taskListCollapsed ? "待办列表已收起" : "待办列表已展开");
+  });
+
   qs("#taskForm").addEventListener("submit", (event) => {
     event.preventDefault();
     const existing = state.tasks.find((task) => task.id === state.editingTaskId);
@@ -5939,6 +6936,7 @@ function bindAll() {
   bindMonitorDate();
   bindQueue();
   bindCalendar();
+  bindHolidayMonitor();
   bindAssets();
   bindRecords();
   bindSync();
