@@ -5885,24 +5885,103 @@ function bindNavigation() {
   };
   const sections = qsa("main > .section");
   let navFrame = null;
+  let preferredSectionId = "";
 
   const activeSectionFromScroll = () => {
-    const navHeight = qs(".nav-list")?.getBoundingClientRect().height || 0;
-    const usableHeight = Math.max(320, window.innerHeight - navHeight);
-    const anchorY = Math.min(usableHeight * 0.42, 260);
-    let active = sections[0]?.id || "overview";
-    let nearestDistance = Infinity;
+    const scrolling = document.scrollingElement || document.documentElement;
+    const viewport = window.visualViewport;
+    const viewportHeight = viewport?.height || window.innerHeight;
+    const viewportWidth = viewport?.width || window.innerWidth;
+    const nav = qs(".nav-list");
+    const navRect = nav?.getBoundingClientRect();
+    const navIsFixed = nav && window.getComputedStyle(nav).position === "fixed";
+    const readableBottom = navIsFixed ? Math.max(140, navRect.top - 12) : viewportHeight;
+    const sampleX = Math.max(24, Math.min(viewportWidth / 2, viewportWidth - 24));
+    const preferredSection = sections.find((section) => section.id === preferredSectionId);
+    if (preferredSection) {
+      const rect = preferredSection.getBoundingClientRect();
+      if (rect.bottom > 32 && rect.top < readableBottom - 32) {
+        return preferredSectionId;
+      }
+    }
+
+    if (scrolling.scrollTop <= 2) {
+      return sections[0]?.id || "overview";
+    }
+
+    if (scrolling.scrollTop + viewportHeight >= scrolling.scrollHeight - 8) {
+      return sections[sections.length - 1]?.id || "overview";
+    }
+
+    let bestSection = sections[0];
+    let bestScore = -Infinity;
     sections.forEach((section) => {
-      const distance = Math.abs(section.getBoundingClientRect().top - anchorY);
-      if (distance < nearestDistance) {
-        nearestDistance = distance;
+      const rect = section.getBoundingClientRect();
+      const visibleHeight = Math.max(0, Math.min(rect.bottom, readableBottom) - Math.max(rect.top, 0));
+      if (visibleHeight <= 0) return;
+      const sectionCenter = rect.top + rect.height / 2;
+      const readingCenter = readableBottom * 0.46;
+      const headingBonus = rect.top <= 132 && rect.bottom > 132 ? 56 : 0;
+      const score = visibleHeight * 2 + headingBonus - Math.abs(sectionCenter - readingCenter) * 0.08;
+      if (score > bestScore) {
+        bestScore = score;
+        bestSection = section;
+      }
+    });
+    if (bestSection && bestScore > -Infinity) {
+      return bestSection.id;
+    }
+
+    const sampleYs = [
+      96,
+      readableBottom * 0.28,
+      readableBottom * 0.48,
+      readableBottom * 0.68,
+      readableBottom - 44,
+    ].filter((y) => y > 0 && y < readableBottom);
+    const votes = new Map();
+
+    sampleYs.forEach((y, index) => {
+      const hitSection = document
+        .elementsFromPoint(sampleX, y)
+        .map((element) => element.closest?.("main > .section"))
+        .find(Boolean);
+      if (hitSection) {
+        votes.set(hitSection.id, (votes.get(hitSection.id) || 0) + sampleYs.length - index);
+      }
+    });
+
+    if (votes.size) {
+      return [...votes.entries()].sort((a, b) => b[1] - a[1])[0][0];
+    }
+
+    const probeY = Math.min(readableBottom * 0.45, 320);
+    let active = sections[0]?.id || "overview";
+    sections.forEach((section) => {
+      if (section.getBoundingClientRect().top <= probeY) {
         active = section.id;
       }
     });
-    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 6) {
-      active = sections[sections.length - 1]?.id || active;
-    }
     return active;
+  };
+
+  const scrollToSection = (target) => {
+    const targetTop = target.getBoundingClientRect().top + window.scrollY - 6;
+    const isMobileNav = window.matchMedia("(max-width: 860px)").matches;
+    const root = document.documentElement;
+    const previousScrollBehavior = root.style.scrollBehavior;
+    if (isMobileNav) {
+      root.style.scrollBehavior = "auto";
+    }
+    window.scrollTo({
+      top: Math.max(0, targetTop),
+      behavior: isMobileNav ? "auto" : "smooth",
+    });
+    if (isMobileNav) {
+      requestAnimationFrame(() => {
+        root.style.scrollBehavior = previousScrollBehavior;
+      });
+    }
   };
 
   const updateActiveNav = (force = false) => {
@@ -5919,14 +5998,44 @@ function bindNavigation() {
   };
 
   qsa(".nav-item").forEach((link) => {
-    link.addEventListener("click", () => {
-      navClickLockUntil = Date.now() + 1400;
-      setActiveNav(link.dataset.section);
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const sectionId = link.dataset.section;
+      const target = qs(link.getAttribute("href"));
+      if (!target) return;
+      const isMobileNav = window.matchMedia("(max-width: 860px)").matches;
+      preferredSectionId = sectionId;
+      navClickLockUntil = Date.now() + (isMobileNav ? 1500 : 1400);
+      setActiveNav(sectionId);
+      scrollToSection(target);
+      if (window.history?.replaceState) {
+        window.history.replaceState(null, "", `#${sectionId}`);
+      } else {
+        window.location.hash = sectionId;
+      }
+      window.setTimeout(() => setActiveNav(sectionId), 80);
+      window.setTimeout(() => updateActiveNav(true), isMobileNav ? 360 : 1500);
     });
   });
 
+  const unlockForManualScroll = () => {
+    preferredSectionId = "";
+    navClickLockUntil = 0;
+    scheduleActiveUpdate();
+  };
+
+  window.addEventListener("pointerdown", (event) => {
+    if (!event.target.closest?.(".nav-item")) {
+      preferredSectionId = "";
+    }
+  }, { passive: true });
   window.addEventListener("scroll", scheduleActiveUpdate, { passive: true });
+  window.addEventListener("touchmove", unlockForManualScroll, { passive: true });
+  window.addEventListener("wheel", unlockForManualScroll, { passive: true });
   window.addEventListener("resize", scheduleActiveUpdate);
+  window.visualViewport?.addEventListener("resize", scheduleActiveUpdate);
+  window.visualViewport?.addEventListener("scroll", scheduleActiveUpdate);
+  window.setInterval(scheduleActiveUpdate, 450);
   updateActiveNav(true);
 }
 
